@@ -6,9 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class HttpClientService {
 
-  // OPENAI_URL="https://api.openai.com/v1/chat/completions";
-  // OPENAI_API_KEY="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";
-  // OPENAI_API_KEY="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";
+
   constructor(private httpClient:HttpClient) { }
 
   // callOpenAi(msg:string){
