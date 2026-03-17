@@ -8,7 +8,10 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'wealthmap';
+  title = 'wealthMap';
+
+  // 三種身分 visitor;user;admin
+  role :string = "visitor";
 
   constructor (private router:Router){}
 
