@@ -32,6 +32,10 @@
               }
             ],
             "styles": [
+<<<<<<< HEAD
+=======
+              "@angular/material/prebuilt-themes/azure-blue.css",
+>>>>>>> carly/code
               "src/styles.scss"
             ],
             "scripts": []
@@ -91,6 +95,10 @@
               }
             ],
             "styles": [
+<<<<<<< HEAD
+=======
+              "@angular/material/prebuilt-themes/azure-blue.css",
+>>>>>>> carly/code
               "src/styles.scss"
             ],
             "scripts": []
