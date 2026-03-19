@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './admin-service-set.component.scss'
 })
 export class AdminServiceSetComponent {
-
+userName:string="Admin";
 }

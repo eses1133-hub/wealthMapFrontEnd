@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './admin-information-set.component.scss'
 })
 export class AdminInformationSetComponent {
+  userName:string="Admin";
 
 }

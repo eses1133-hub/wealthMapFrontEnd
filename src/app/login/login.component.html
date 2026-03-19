@@ -1,0 +1,77 @@
+<div class="whole">
+  <div class="left-box">
+    <p>個人財務</p>
+    <p>與資產配置平台</p>
+  </div>
+
+  <div class="right-box">
+    <div class="right-content">
+      <br>
+      <h1>登 入</h1>
+      <div class="input-box">
+        <label>電子郵件</label>
+        <br>
+        <input type="email" (blur)="validate('email')" [(ngModel)]="email" placeholder="請輸入電子郵件">
+
+      @if (emailErrorMsg) {
+        <span class="error-msg" style="color: red; font-size: 12px;">
+          {{ emailErrorMsg }}
+        </span>
+      }
+      </div>
+      <div class="input-box" style="position: relative;">
+        <label>密 碼</label><br><input [type]="showPassword ? 'text' : 'password'"  (blur)="validate('password')" [(ngModel)]="password" placeholder="請輸入密碼">
+        <button type="button" (click)="togglePassword()" class="isshowPassword" ><mat-icon class="custom-icon" aria-hidden="false" aria-label="Example home icon">{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon></button>
+      @if (passwordErrorMsg) {
+        <span class="error-msg" style="color: red; font-size: 12px;">
+          {{ passwordErrorMsg }}
+        </span>
+      }
+
+      </div>
+
+
+      <div class="options">
+        <label><input type="checkbox" [(ngModel)]="rememberMe" class="checkbox">&nbsp;自動登入</label>
+        <a routerLink="/forgot" routerLinkActive="forgot-link" class="link-text">忘記密碼</a>
+      </div>
+      <div class="btn">
+        <button (click)="login()" class="btn-google">登&nbsp;入</button>
+      </div>
+      <div class="footer-text">還沒有帳號嗎?<a routerLink="/register" routerLinkActive="register-link"
+          class="link-text">註冊</a></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="right-box">
+    <div class="right-content">
+      <br>
+      <h1>登 入</h1>
+      <div class="input-box">
+        <label>電子郵件</label><br><input type="email" [(ngModel)]="email" placeholder="請輸入電子郵件">
+        <div *ngIf="isEmailInvalid" style="color: red;">
+          <small>⚠️ 電子郵件格式不正確</small>
+        </div>
+      </div>
+      <div class="input-box">
+        <label>密 碼</label><br><input type="password" [(ngModel)]="password" placeholder="請輸入密碼">
+        <div *ngIf="isPasswordLengthInvalid" style="color: red;">
+          <small>⚠️ 密碼長度須為 8-12 位 (目前: {{ password.length }} 位)</small>
+        </div>
+        <button type="button" (click)="togglePassword()"></button>
+      </div>
+
+
+      <div class="options">
+        <label><input type="checkbox" [(ngModel)]="rememberMe" class="checkbox">&nbsp;自動登入</label>
+        <a routerLink="/forgot" routerLinkActive="forgot-link" class="link-text">忘記密碼</a>
+      </div>
+      <div class="btn">
+        <button (click)="login()" class="btn-google">登&nbsp;入</button>
+      </div>
+      <div class="footer-text">還沒有帳號嗎?<a routerLink="/register" routerLinkActive="register-link" class="link-text">註冊</a></div>
+    </div>
+  </div>
+</div> -->

@@ -1,16 +1,19 @@
 .frameCss{
   display: flex;
-  flex-direction: column;    /* 讓內容由上往下排 */
-  align-items: center;       /* 水平居中 */
-  // gap: 10px;
+  justify-content: center;
+  position: relative;
+  // display: flex;
+  // flex-direction: column;    /* 讓內容由上往下排 */
+  // align-items: center;       /* 水平居中 */
+  // // gap: 10px;
 }
 
 .headerCss{
   position: relative;
-  width: 80%;
+  width: 100%;
   height:60px;
-  border-radius: 10px;
-  background: linear-gradient(45deg, #799CD2, #2F5FA9);
+  // border-radius: 10px;
+ background: linear-gradient(45deg, #9dcee2, #4091c9);
 }
 
 .logo{
@@ -50,30 +53,22 @@
 }
 
 .contentArea{
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
   width:80%;
   flex:1;
   padding-bottom: 20px;
 }
 
-.itemCss{
-  display: flex;             /* 啟用 Flex 佈局 */
-  flex-wrap: wrap;           /* 寬度不夠時自動換行 */
-  justify-content: space-evenly; /* 讓圖案在行內平均分布 */
-  gap: 20px;                 /* 設定圖案之間的間距，取代 &nbsp; */
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-.iconWrapper{
-  display:flex;
-  flex-direction: column;
-  align-items: center;
+.iconbtn:hover{
+  border: none;
+  margin: 40px;
+  margin-bottom: 8px;
+  background-color: white;
+  transform: scale(1.05);
   cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.iconWrapper:hover {
-  transform: scale(1.05);    /* 滑鼠懸停時輕微放大 */
 }
 
 .iconWrapper span {
@@ -82,13 +77,25 @@
   color: #494949;
   font-weight: bold;
 }
-
+.iconbtn{
+  border: none;
+  margin: 40px;
+  margin-bottom: 20px;
+  background-color: white;
+  cursor: pointer;
+}
+.iconbox{
+  position: absolute;
+  box-shadow: 5px 5px 15px rgba(3, 50, 112, 0.3);
+   border-radius: 20px;
+}
 .iconCss{
   width: 90px;
   height: 90px;
 }
 
 .notification{
+  position: absolute;
   display: flex;             /* 啟用 Flex 佈局 */
   flex-direction: column;
   justify-self:center;
@@ -125,20 +132,53 @@
 }
 
 .footerCss{
+  position: relative;
+  width: 100%;
+  height:80px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   font-size: 16px;
-  width: 100%;
-  height:100px;
-  background: linear-gradient(180deg, white, #2F5FA9);
-  padding: 20px;
-  // position: sticky;
-  // top: 100vh;
+ background: linear-gradient(45deg, #9dcee2, #4091c9);
 }
 
 .footerCss span{
   align-self: center;
   font-size: 16px;
-  color:black;
+  color:white;
 }
+
+.system-tag{
+  background-color: #4091c9;
+  color:white;
+  border-radius: 5px;
+  padding:3px 8px 3px 8px;
+  margin-right: 15px;
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+
+.system{
+ position: relative;
+//  box-shadow: 5px 5px 15px rgba(109, 163, 234, 0.3);
+  padding: 10px;
+  border-bottom:1px solid #b6e4f6;
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+.system:hover{
+ transform: translateY(-2px);
+ box-shadow: 0 10px 20px rgba(64, 145, 201, 0.2);
+ transition: all 0.3s ease; /* 讓動作變平滑 */
+}
+
+.system-title {
+    display: inline-block;
+    width: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom; /* 修正與旁邊文字的對齊 */
+}
+
