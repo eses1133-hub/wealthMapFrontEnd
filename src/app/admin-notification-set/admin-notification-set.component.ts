@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './admin-notification-set.component.scss'
 })
 export class AdminNotificationSetComponent {
-
+  userName:string="Admin";
 }

@@ -10,9 +10,6 @@ import { Router, RouterOutlet } from '@angular/router';
 export class AppComponent {
   title = 'wealthMap';
 
-  // 三種身分 visitor;user;admin
-  role :string = "visitor";
-
   constructor (private router:Router){}
 
   login(){

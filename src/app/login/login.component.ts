@@ -4,10 +4,11 @@ import { HeaderComponent } from "../header/header.component";
 import { FormsModule } from '@angular/forms';
 import { WealthService } from '../wealthservice.service';
 import { HttpClient } from '@angular/common/http';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
-  imports: [HeaderComponent, FormsModule,RouterLink],
+  imports: [HeaderComponent, FormsModule,RouterLink,MatIconModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -17,25 +18,57 @@ export class LoginComponent {
   rememberMe = false;
   showPassword = false;
 
-  constructor(
-    private router:Router,
-    // private wealthService:WealthService,
-    // private http: HttpClient
-  ){}
-  togglePassword() {
+  emailErrorMsg = '';
+  passwordErrorMsg = '';
+
+  constructor(private router:Router,){
+  }
+
+
+togglePassword() {
     this.showPassword = !this.showPassword;
   }
-  get isEmailInvalid(): boolean {
-    const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
-    return this.email.length > 0 && !emailRule.test(this.email);
+
+  validate(field: 'email' | 'password'): void {
+  const emailRule = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (field === 'email') {
+    if (!this.email) {
+      this.emailErrorMsg = '電子郵件不能為空';
+    } else if (!emailRule.test(this.email)) {
+      this.emailErrorMsg = 'Email 格式不正確';
+    } else {
+      this.emailErrorMsg = ''; // 格式正確就清空訊息
+    }
   }
-  get isPasswordLengthInvalid(): boolean {
-    const passRule = /^[a-zA-Z0-9]{8,12}$/;
-    return this.password.length > 0;
+
+  if (field === 'password') {
+    if (!this.password) {
+      this.passwordErrorMsg = '請輸入密碼';
+    } else if (this.password.length < 8 || this.password.length > 12) {
+      this.passwordErrorMsg = '密碼長度須為 8-12 位';
+    } else {
+      this.passwordErrorMsg = '';
+    }
   }
-  login() {
-    this.router.navigate(['/first']);
+}
+
+  login(): void {
+   // 1. 手動觸發兩次驗證，確保按下登入時，兩個錯誤訊息都會更新
+  this.validate('email');
+  this.validate('password');
+
+  // 2. 最終檢查：只要兩個錯誤訊息都是空的，就代表格式全部正確
+  if (!this.emailErrorMsg && !this.passwordErrorMsg) {
+    console.log('格式正確，執行登入 API');
+
+    // 這裡放原本被註解掉的 Service 呼叫邏輯
+    // const loginData = { email: this.email, password: this.password };
+    // this.wealthService.login(loginData).subscribe(...)
   }
+}
+
+
 
   // login() {
   //   const loginData = {
