@@ -48,7 +48,6 @@ export class MainComponent {
     this.router.navigate(['/login']);
   }
 
-  constructor(private router: Router) { }
 
   goToRiskTest() {
     this.router.navigate(['/risk-test']);
