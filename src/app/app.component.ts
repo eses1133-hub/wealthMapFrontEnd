@@ -21,4 +21,13 @@ export class AppComponent {
   register(){
     this.router.navigate(['/register']);
   }
+  main(){
+    this.router.navigate(['/main']);
+  }
+  health(){
+    this.router.navigate(['/health']);
+  }
+  strategy(){
+    this.router.navigate(['/strategy']);
+  }
 }

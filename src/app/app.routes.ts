@@ -8,6 +8,8 @@ import { AdminPrivacySetComponent } from './admin-privacy-set/admin-privacy-set.
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HeaderComponent } from './header/header.component';
+import { HealthComponent } from './health/health.component';
+import { StrategyComponent } from './strategy/strategy.component';
 
 export const routes: Routes = [
   {path:"main", component:MainComponent},
@@ -22,5 +24,8 @@ export const routes: Routes = [
   {path:'login', component: LoginComponent},
   {path:'register', component: RegisterComponent},
   {path:'header', component: HeaderComponent},
+  {path:'health', component: HealthComponent},
+  {path:'strategy', component: StrategyComponent},
   // { path: 'forgot', component: ForgotComponent },
+
 ];
