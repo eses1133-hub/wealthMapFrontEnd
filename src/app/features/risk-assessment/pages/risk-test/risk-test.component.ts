@@ -21,7 +21,7 @@ export class RiskTestComponent {
     private riskService: RiskService,
     private router: Router
   ) {
-    // 建立 6 題表單，預設為 null，且設定 Validators.required (必填)
+
     this.riskForm = this.fb.group({
       ageScore: [null, Validators.required],
       knowledgeScore: [null, Validators.required],
@@ -33,8 +33,8 @@ export class RiskTestComponent {
   }
 
   submitTest() {
-    // 防呆機制：如果有題目沒填，跳出警告並停止執行
     if (this.riskForm.invalid) {
+      this.riskForm.markAllAsTouched();
       alert('您還有題目未作答喔！請確認 6 題都已選擇。');
       return;
     }
@@ -46,6 +46,10 @@ export class RiskTestComponent {
       userId: 1, // 先寫死 1 號使用者測試
       ...this.riskForm.value
     };
+
+
+
+
 
     console.log('準備傳給後端的資料:', requestData);
 
