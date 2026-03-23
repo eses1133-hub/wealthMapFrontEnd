@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './admin-privacy-set.component.scss'
 })
 export class AdminPrivacySetComponent {
-
+userName:string="Admin";
 }

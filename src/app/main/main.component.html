@@ -1,64 +1,128 @@
-<!-- 使用者才會顯示 -->
-@if( role=="user"){
-  <br>
+<!-- 置中 -->
 <div class="frameCss">
-  <div id="notification" class="notification-box">
-    <span>這裡是可以打叉的個人通知！</span>
-    <button class="close-btn" (click)="closeNotice()">&times;</button>
+  <!-- header -->
+  <div class="headerCss">
+
+    <!-- logo的位置 -->
+    <label class="logo">WM</label>
+
+    @if( role== "visitor" ){
+    <button class="loginBtn" (click)="login()">登&nbsp;入</button>
+    <button class="registerBtn" (click)="login()">註&nbsp;冊</button>
+    }
+    @else{
+    <label class="headerText">XXX，歡迎使用</label>
+    }
   </div>
-</div>
-<div class="frameCss">
-<div class="chart-container">
-  <canvas id="chart"></canvas>
-  <div class="chart-center-text">
-    <span class="total-label">總資產</span>
-    <span class="total-amount">$10,000</span>
-  </div>
-</div>
 </div>
 
+<!-- only user -->
+@if( role=="user"){
+<!-- 個人通知輪播 -->
+<div class="frameCss">
+  <div class="personal-carousel">
+    <!-- 切換通知 -->
+    <div class="personal-container" [style.transform]="'translateX(' + (-currentIndex * 100) + '%)'">
+      @for (personal of personalList; track $index) {
+      <div class="personal-item">
+        <span class="personal-tag">{{ personal.tag }}</span>
+        <span class="personal-title">{{ personal.title }}</span>
+        <span class="personal-date">{{ personal.date }}</span>
+      </div>
+      }
+    </div>
+
+    <div class="carousel-controls">
+      <button (click)="prevPersonal()"><mat-icon>chevron_left</mat-icon></button>
+      <button (click)="nextPersonal()"><mat-icon>chevron_right</mat-icon></button>
+    </div>
+  </div>
+</div>
+<!-- 個人頁面圓餅圖 -->
+<div class="frameCss">
+  <div class="chart-container">
+    <canvas id="chart"></canvas>
+    <div class="chart-center-text">
+      <span class="total-label">總資產</span>
+      <span class="total-amount">$10,000</span>
+    </div>
+  </div>
+</div>
 }
+<br>
 <!-- 父層 -->
 <div class="frameCss">
+
   <!-- 子層 -->
-  <div style="position: absolute;">
+  <div class="iconbox">
+    @if(role=="user"){
     <button class="iconbtn">
-      <img style="width: 80px;height: 60px;" src="16220.png">
+      <img style="width: 80px;height: 60px;" src="16220 (1).png">
       <br><br>
       <label style="font-size: 16px;">我的資產</label>
     </button>
+    }
     <button class="iconbtn">
-      <img style="width: 90px;height: 90px;" src="9274 (1).png">
+      <img style="width: 90px;height: 90px;" src="9274 (3).png">
       <br><br>
       <label style="font-size: 16px;">財務健康</label>
     </button>
     <button class="iconbtn">
-      <img style="width: 120px;height: 70px;" src="9289.png">
+      <img style="width: 120px;height: 70px;" src="9289 (1).png">
       <br><br>
       <label style="font-size: 16px;">投資策略</label>
     </button>
     <button class="iconbtn">
-      <img style="width: 90px;height: 80px;" src="12260.png">
+      <img style="width: 90px;height: 80px;" src="12260 (3).png">
       <br><br>
       <label style="font-size: 16px;">財務目標</label>
     </button>
     <button class="iconbtn">
-      <img style="width: 100px;height: 70px;" src="9179.png">
+      <img style="width: 100px;height: 70px;" src="9179 (2).png">
       <br><br>
       <label style="font-size: 16px;">風險評估</label>
     </button>
-    <hr>
+    <!-- <hr> -->
   </div>
 </div>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
 <!-- 新聞 -->
 <div class="frameCss">
-  <div style="width: 70%;height: 400px;background-color: #b8cae6;">相關新聞</div>
+  <div style="font-size: 18px;">相關新聞</div>
+</div>
+<div class="frameCss" style="margin: 20px;">
+  <div style="width: 80%;height: 400px;background-color: #b8cae6;"></div>
 </div>
 <br>
 <!-- 系統通知 -->
-<div style="position: relative;">
-  <div style="position: absolute;left:187px;width: 40%;height: 200px;background-color: #b8cae6;">系統通知</div>
+<div class="frameCss">
+  <div style="font-size: 18px;">系統通知</div>
 </div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="frameCss" style="margin: 20px;">
+  <div style="width: 70%; border-color: #4091c9;">
+    @for(system of systemList ; track $index){
+      <div class="system" >
+      <label class="system-tag">{{system.tag}}</label>
+      <label class="system-title">{{system.title}}</label>
+      <label style="position: absolute;right:20px">{{system.date}}</label>
+      </div>
+    }
+  </div>
+</div>
+<br><br><br><br><br><br><br><br>
+
+<div class="footerCss">
+  <!-- footer -->
+  <span>© 2026 WealthMap 版權所有</span>
+</div>
+
+
+<!-- 可以打叉的個人通知 -->
+<!-- <div class="frameCss">
+  <div id="notification" class="notification-box">
+    <span>這裡是可以打叉的個人通知！</span>
+    <button class="close-btn" (click)="closeNotice()">&times;</button>
+  </div>
+</div> -->
