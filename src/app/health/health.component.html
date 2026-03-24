@@ -1,3 +1,23 @@
+<div class="input-box">
+  <h3>輸入財務資料</h3>
+
+  <input type="number" [(ngModel)]="form.income" placeholder="收入">
+  <input type="number" [(ngModel)]="form.expense" placeholder="支出">
+  <input type="number" [(ngModel)]="form.savings" placeholder="存款">
+  <input type="number" [(ngModel)]="form.cash" placeholder="現金">
+
+  <input type="number" [(ngModel)]="form.mortgage" placeholder="房貸">
+  <input type="number" [(ngModel)]="form.carLoan" placeholder="車貸">
+  <input type="number" [(ngModel)]="form.personalLoan" placeholder="信貸">
+  <input type="number" [(ngModel)]="form.creditCard" placeholder="信用卡">
+
+  <input type="number" [(ngModel)]="form.investmentSuccessRate" placeholder="投資成功率">
+
+  <button (click)="submit()">計算</button>
+</div>
+
+
+
 
 <div class="whole">
   <div class="health-container">
@@ -25,3 +45,6 @@
     </div>
   </div>
 </div>
+
+
+
