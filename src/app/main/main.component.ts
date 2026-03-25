@@ -53,6 +53,11 @@ export class MainComponent {
     this.router.navigate(['/risk-test']);
   }
 
+  //首頁跳轉我的資產
+  goToAssets() {
+    this.router.navigate(['/assets']);
+  }
+
   closeNotice() {
     const notice = document.getElementById('notification');
     notice?.remove();

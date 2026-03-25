@@ -10,7 +10,7 @@ export class AssetService {
 
     constructor() { }
 
-    // 1. 模擬詳細資產清單
+    // 模擬資產清單
     getUserAssets(userId: number): Observable<AssetDTO[]> {
         const mockAssets: AssetDTO[] = [
             { id: 1, assetName: '國泰世華活存', assetType: AssetType.CASH, currentValue: 20000, cost: 19400, returnPercentage: 3.12 },
@@ -23,7 +23,7 @@ export class AssetService {
         return of(mockAssets);
     }
 
-    // 2. 模擬圓餅圖資料
+    // 模擬圓餅圖資料
     getAssetAllocation(userId: number): Observable<AssetAllocationDto[]> {
         const mockAllocation: AssetAllocationDto[] = [
             { type: AssetType.CASH, totalAmount: 50000, percentage: 33.3 },

@@ -26,6 +26,10 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'header', component: HeaderComponent },
+
+  //登入用戶後的我的資產網頁
+  { path: 'assets', loadComponent: () => import('./features/assets/pages/asset-overview/asset-overview.component').then(m => m.AssetOverviewComponent) },
+
   { path: 'portfolio-recommendation', loadComponent: () => import('./features/risk-assessment/pages/portfolio-recommendation/portfolio-recommendation.component').then(m => m.PortfolioRecommendationComponent) },
   // { path: 'forgot', component: ForgotComponent },
   // path如果是** 是用來設定錯誤畫面的 component也是設定要呈現甚麼內容

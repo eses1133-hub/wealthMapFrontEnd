@@ -1,1 +1,62 @@
-<p>asset-overview works!</p>
+<div class="asset-container">
+
+    <h2 class="main-title">我的資產</h2>
+
+    <p class="subtitle">這裡可以放說明這裡可以放說明</p>
+    <p class="subtitle">這裡可以放說明這裡可以放說明這裡可以放說明</p>
+
+    <div class="asset-layout">
+
+        <div class="panel chart-panel">
+            <div class="chart-wrapper">
+                <canvas id="assetAllocationChart"></canvas>
+            </div>
+            <p class="chart-caption">流動資產 & 投資型資產</p>
+        </div>
+
+        <div class="panel list-panel">
+            <div class="list-header">
+                <div class="header-title">
+                    <h3>投資型資產</h3>
+                    <button class="add-btn" (click)="addAsset()">+</button>
+                </div>
+            </div>
+
+            <div class="list-columns">
+                <div class="col-icon">#</div>
+                <div class="col-name">類型/名稱</div>
+                <div class="col-cost">成本</div>
+                <div class="col-value">目前價值</div>
+                <div class="col-return">報酬率</div>
+            </div>
+
+            <div class="asset-list">
+                @for(asset of userAssets; track asset.id) {
+                <div class="asset-item-card">
+                    <div class="col-icon">
+                        @switch(asset.assetType) {
+                        @case('CASH') { 💰 }
+                        @case('STOCK') { 📈 }
+                        @case('FUND') { 🌐 }
+                        @case('BOND') { ⚖️ }
+                        @default { 🧩 }
+                        }
+                    </div>
+                    <div class="col-name">
+                        <span class="name-text">{{ asset.assetName }}</span>
+                        <span class="type-tag">{{ translateAssetType(asset.assetType) }}</span>
+                    </div>
+                    <div class="col-cost">{{ asset.cost | currency:'TWD':'symbol-narrow':'1.0-0' }}</div>
+                    <div class="col-value">{{ asset.currentValue | currency:'TWD':'symbol-narrow':'1.0-0' }}</div>
+
+                    <div class="col-return"
+                        [ngClass]="{'pos-return': asset.returnPercentage > 0, 'neg-return': asset.returnPercentage < 0}">
+                        {{ asset.returnPercentage > 0 ? '+' : '' }}{{ asset.returnPercentage | number:'1.2-2' }}%
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
