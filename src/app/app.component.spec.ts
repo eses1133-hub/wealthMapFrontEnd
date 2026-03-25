@@ -14,17 +14,17 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'wealthmap' title`, () => {
+  it(`should have the 'wealthMap' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('wealthmap');
+    expect(app.title).toEqual('wealthMap');
+
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, wealthmap');
-
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, wealthMap');
   });
 });

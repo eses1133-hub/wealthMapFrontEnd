@@ -1,9 +1,6 @@
-<!-- 置中 -->
 <div class="frameCss">
-  <!-- header -->
   <div class="headerCss">
 
-    <!-- logo的位置 -->
     <label class="logo">WM</label>
 
     @if( role== "visitor" ){
@@ -75,12 +72,9 @@
   </div>
 </div>
 
-<!-- only user -->
 @if( role=="user"){
-<!-- 個人通知輪播 -->
 <div class="frameCss">
   <div class="personal-carousel">
-    <!-- 切換通知 -->
     <div class="personal-container" [style.transform]="'translateX(' + (-currentIndex * 100) + '%)'">
       @for (personal of personalList; track $index) {
       <div class="personal-item">
@@ -97,7 +91,6 @@
     </div>
   </div>
 </div>
-<!-- 個人頁面圓餅圖 -->
 <div class="frameCss">
   <div class="chart-container">
     <canvas id="chart"></canvas>
@@ -109,10 +102,8 @@
 </div>
 }
 <br>
-<!-- 父層 -->
 <div class="frameCss">
 
-  <!-- 子層 -->
   <div class="iconbox">
     @if(role=="user"){
     <button class="iconbtn">
@@ -136,18 +127,17 @@
       <br><br>
       <label style="font-size: 16px;">財務目標</label>
     </button>
-    <button class="iconbtn">
+
+    <button class="iconbtn" (click)="goToRiskTest()" style="cursor: pointer;">
       <img style="width: 100px;height: 70px;" src="9179 (2).png">
       <br><br>
       <label style="font-size: 16px;">風險評估</label>
     </button>
-    <!-- <hr> -->
   </div>
 </div>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-<!-- 新聞 -->
 <div class="frameCss">
   <div style="font-size: 18px;">相關新聞</div>
 </div>
@@ -156,10 +146,12 @@
 </div>
 <br>
 
+
 <!-- 系統通知 -->
 <div class="frameCss">
   <div style="font-size: 18px;">系統通知</div>
 </div>
+
 <div class="frameCss" style="margin: 20px;">
   <div style="width: 70%; border-color: #4091c9;">
     @for(notification of notificationList?.data ; track $index){
@@ -175,9 +167,6 @@
   </div>
 </div>
 <br><br><br><br>
-
-
-
 
 <!-- 可以打叉的個人通知 -->
 <!-- <div class="frameCss">
