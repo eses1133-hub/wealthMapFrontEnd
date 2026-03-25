@@ -12,6 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HeaderComponent } from './header/header.component';
 
+
 export const routes: Routes = [
   { path: "main", component: MainComponent },
   { path: "admin-main", component: AdminMainComponent },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'header', component: HeaderComponent },
+  { path: 'portfolio-recommendation', loadComponent: () => import('./features/risk-assessment/pages/portfolio-recommendation/portfolio-recommendation.component').then(m => m.PortfolioRecommendationComponent) },
   // { path: 'forgot', component: ForgotComponent },
   // path如果是** 是用來設定錯誤畫面的 component也是設定要呈現甚麼內容
   // 要記得如果要設定錯誤畫面要放在路由的最底下
