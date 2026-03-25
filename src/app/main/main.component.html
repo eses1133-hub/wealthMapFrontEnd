@@ -8,10 +8,69 @@
 
     @if( role== "visitor" ){
     <button class="loginBtn" (click)="login()">登&nbsp;入</button>
-    <button class="registerBtn" (click)="login()">註&nbsp;冊</button>
+    <button class="registerBtn" (click)="register()">註&nbsp;冊</button>
     }
     @else{
-    <label class="headerText">XXX，歡迎使用</label>
+    <!-- <label class="headerText">XXX，歡迎使用</label> -->
+    <!-- <div class="user-notification-container">
+      <div  (click)="toggleMenu($event)">
+        <span class="click-notification"><mat-icon>circle_notifications</mat-icon></span>
+      </div>
+    </div> -->
+
+    <!-- 通知 -->
+    <div class="user-notification-container">
+      <div class="notification-trigger" (click)="toggleNotification($event)">
+        <mat-icon>notifications_none</mat-icon>
+        @if (hasNewMessage) { <span class="badge"></span> }
+
+        @if (isNotificationOpen) {
+        <div class="notification-panel" (click)="$event.stopPropagation()">
+          <div class="tab-header">
+            <div class="tab-item" [class.active]="activeTab === 'personal'" (click)="activeTab = 'personal'">個人訊息</div>
+            <div class="tab-item" [class.active]="activeTab === 'system'" (click)="activeTab = 'system'">系統通知</div>
+          </div>
+
+          <!-- 個人訊息 -->
+          <div class="tab-content">
+            @if (activeTab === 'personal') {
+            <ul class="msg-list">
+              <li>您的資產配置已更新</li>
+              <li>本月預算達成率 90%</li>
+            </ul>
+            <!-- 系統通知 -->
+            } @else {
+            <ul class="msg-list">
+              <li class="system-msg">系統維護通知：週六凌晨 2:00</li>
+              <li class="system-msg">WealthMap 新功能上線！</li>
+            </ul>
+            }
+          </div>
+          <div class="tab-footer" routerLink="/notifications">查看全部通知</div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- 登出與個人檔案 -->
+    <div class="user-menu-container">
+      <div class="menu-trigger" (click)="toggleMenu($event)">
+        <span class="click-menu">XXX，歡迎使用</span>
+        <mat-icon [class.rotated]="isMenuOpen">expand_more</mat-icon>
+      </div>
+
+      @if (isMenuOpen) {
+      <ul class="custom-dropdown" (click)="$event.stopPropagation()">
+        <li class="menu-item" routerLink="/profile" (click)="isMenuOpen = false">
+          <span>個人檔案</span>
+        </li>
+        <div class="divider"></div>
+        <li class="menu-item logout" (click)="logout()">
+          <span>登出</span>
+        </li>
+      </ul>
+      }
+    </div>
     }
   </div>
 </div>
@@ -96,27 +155,28 @@
   <div style="width: 80%;height: 400px;background-color: #b8cae6;"></div>
 </div>
 <br>
+
 <!-- 系統通知 -->
 <div class="frameCss">
   <div style="font-size: 18px;">系統通知</div>
 </div>
 <div class="frameCss" style="margin: 20px;">
   <div style="width: 70%; border-color: #4091c9;">
-    @for(system of systemList ; track $index){
-      <div class="system" >
-      <label class="system-tag">{{system.tag}}</label>
-      <label class="system-title">{{system.title}}</label>
-      <label style="position: absolute;right:20px">{{system.date}}</label>
-      </div>
+    @for(notification of notificationList?.data ; track $index){
+    @if(notification.scheduledDate<=gettoday){
+    <div class="system">
+      <label class="notification-tag" (click)="detail(notification.id!)">{{notification.tag}}</label>
+      <label class="notification-title" (click)="detail(notification.id!)">{{notification.title}}</label>
+      <label style="position: absolute;right:20px"
+        (click)="detail(notification.id!)">{{notification.scheduledDate}}</label>
+    </div>
+    }
     }
   </div>
 </div>
-<br><br><br><br><br><br><br><br>
+<br><br><br><br>
 
-<div class="footerCss">
-  <!-- footer -->
-  <span>© 2026 WealthMap 版權所有</span>
-</div>
+
 
 
 <!-- 可以打叉的個人通知 -->
