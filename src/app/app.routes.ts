@@ -11,28 +11,30 @@ import { RiskResultComponent } from './features/risk-assessment/pages/risk-resul
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HeaderComponent } from './header/header.component';
+import { NotificationComponent } from './notification/notification.component';
 
 
 export const routes: Routes = [
+
   { path: "main", component: MainComponent },
   { path: "admin-main", component: AdminMainComponent },
   { path: "admin-information-set", component: AdminInformationSetComponent },
   { path: "admin-notification-set", component: AdminNotificationSetComponent },
+  { path: "admin-notification-set/:pageId", component: AdminNotificationSetComponent },
   { path: "admin-service-set", component: AdminServiceSetComponent },
   { path: "admin-privacy-set", component: AdminPrivacySetComponent },
   { path: "risk-cover", component: RiskCoverComponent },
   { path: "risk-test", component: RiskTestComponent },
   { path: "risk-result", component: RiskResultComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'header', component: HeaderComponent },
 
-  //登入用戶後的我的資產網頁
-  { path: 'assets', loadComponent: () => import('./features/assets/pages/asset-overview/asset-overview.component').then(m => m.AssetOverviewComponent) },
-
-  { path: 'portfolio-recommendation', loadComponent: () => import('./features/risk-assessment/pages/portfolio-recommendation/portfolio-recommendation.component').then(m => m.PortfolioRecommendationComponent) },
-  // { path: 'forgot', component: ForgotComponent },
   // path如果是** 是用來設定錯誤畫面的 component也是設定要呈現甚麼內容
   // 要記得如果要設定錯誤畫面要放在路由的最底下
   // { path: "**", component: PageNotFoundComponent}
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'header', component: HeaderComponent },
+  { path: 'notification', component: NotificationComponent },
+  { path: 'notification/:pageId', component: NotificationComponent }
+  // { path: 'forgot', component: ForgotComponent },
+
 ];
