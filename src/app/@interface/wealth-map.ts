@@ -17,3 +17,9 @@ export interface StrategySetting {
   lastClosePrice?: number;
   currentBias?: number;
 }
+
+export interface LoginResponseDTO{
+  token: string,
+  userId: number,
+  role: string
+}

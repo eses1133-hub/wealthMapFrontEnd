@@ -9,7 +9,7 @@ import { HttpClientService } from '../@service/http-client.service';
 
 @Component({
   selector: 'app-register',
-  imports: [HeaderComponent, FormsModule, RouterLink,MatIconModule],
+  imports: [HeaderComponent, FormsModule, RouterLink, MatIconModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -24,11 +24,11 @@ export class RegisterComponent {
   nameErrorMsg = '';
   termErrorMsg = '';
 
-  isAccept:boolean= false;
+  isAccept: boolean = false;
 
-  constructor(private router:Router,
-      private httpClientService: HttpClientService,){
-    }
+  constructor(private router: Router,
+    private httpClientService: HttpClientService,) {
+  }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -61,14 +61,14 @@ export class RegisterComponent {
         this.passwordErrorMsg = '*此為必填欄位';
       } else if (this.password.length < 7 || this.password.length > 12) {
         this.passwordErrorMsg = '密碼長度須為 7-12 位';
-      }else {
+      } else {
         this.passwordErrorMsg = '';
       }
     }
     if (field === 'isAccept') {
       if (!this.isAccept) {
         this.termErrorMsg = '*請確認條款內容';
-      }else {
+      } else {
         this.termErrorMsg = '';
       }
     }
@@ -88,18 +88,21 @@ export class RegisterComponent {
         password: this.password
       };
       console.log('格式正確，執行登入 API');
-      this.httpClientService.postApi(`http://localhost:8080/api/auth/register`,loginData)
-      .subscribe((register: any) => {
-        if(register.code==409){
-          console.log('已註冊過');
-          this.emailErrorMsg = '此 Email 已註冊過';
-        }
-        else{
-      console.log('註冊成功');
-      this.emailErrorMsg = '';
-        }
+      this.httpClientService.postApi(`http://localhost:8080/api/auth/register`, loginData)
+        .subscribe((register: any) => {
+          if (register.code == 409) {
+            console.log('已註冊過');
+            this.emailErrorMsg = '此 Email 已註冊過';
+            return;
+          }
+          else {
+            console.log('註冊成功');
+            this.emailErrorMsg = '';
+            console.log(register);
+            // this.router.navigate(['/investment-manage']);
+          }
 
-      })
+        })
 
       // 這裡放原本被註解掉的 Service 呼叫邏輯
       // const loginData = { email: this.email, password: this.password };
@@ -108,6 +111,6 @@ export class RegisterComponent {
   }
 
   ngOnInit(): void {
-    this.isAccept=false;
+    this.isAccept = false;
   }
 }
