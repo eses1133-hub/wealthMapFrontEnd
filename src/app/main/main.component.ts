@@ -54,6 +54,11 @@ export class MainComponent {
     notice?.remove();
   }
 
+  investmentManage(){
+    console.log("InvestmentManage");
+    this.router.navigate(['/investment-manage']);
+  }
+
   ngAfterViewInit() {
     // 獲取 canvas 元素
     let ctx = document.getElementById('chart') as HTMLCanvasElement;

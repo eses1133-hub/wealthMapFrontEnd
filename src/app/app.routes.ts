@@ -8,8 +8,12 @@ import { AdminPrivacySetComponent } from './admin-privacy-set/admin-privacy-set.
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HeaderComponent } from './header/header.component';
+import { InvestmentManageComponent } from './investment-manage/investment-manage.component';
+import { StrategyListComponent } from './strategy-list/strategy-list.component';
+import { SseDemoComponent } from './sse-demo/sse-demo.component';
 
 export const routes: Routes = [
+  { path: '', component: SseDemoComponent },
   {path:"main", component:MainComponent},
   { path: "admin-main", component: AdminMainComponent},
   { path: "admin-information-set", component: AdminInformationSetComponent},
@@ -23,4 +27,6 @@ export const routes: Routes = [
   {path:'register', component: RegisterComponent},
   {path:'header', component: HeaderComponent},
   // { path: 'forgot', component: ForgotComponent },
+  {path:'investment-manage', component: InvestmentManageComponent },
+  {path:'strategy-list', component: StrategyListComponent}
 ];

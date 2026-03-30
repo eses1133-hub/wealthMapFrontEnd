@@ -1,7 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal,inject } from '@angular/core';
 import { StrategySetting } from '../@interface/wealth-map';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { ExampleService } from '../@service/example.service';
+import { HttpClientService } from '../@service/http-client.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogAddStrategyComponent } from '../@dialog/dialog-add-strategy/dialog-add-strategy.component';
+import { AUTO_STYLE } from '@angular/animations';
 
 @Component({
   selector: 'app-strategy-list',
@@ -13,23 +19,143 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './strategy-list.component.scss'
 })
 export class StrategyListComponent {
+  constructor(
+    private router: Router,
+    private exampleService:ExampleService,
+    private httpClientService:HttpClientService
+  ){}
   // 定義目前的頁籤狀態，預設為 'rebalance'
   currentTab = signal<'rebalance' | 'strategy' | 'engine'>('strategy');
   // 三種身分 visitor;user;admin
   role: string = "user";
-  UserName:string ="User";
+  userid:number=2;
+  userName:string ="User";
   showModal: boolean = true;
-  strategies!:StrategySetting[];
+  // 追蹤正在編輯的卡片 (可以用 index 或 symbol)
+  editingId: number | null = null;
+  strategies:StrategySetting[]=[];
+  // strategies:StrategySetting[]=[{
+  //   id: 1,
+  //   symbol: '0050',
+  //   buyThreshold: 1,
+  //   sellThreshold: 1,
+  //   isActive: true,
+  //   currentPrice: 75.8,
+  //   lastClosePrice: 74.9,
+  //   currentBias: 0.2
+  // },{
+  //   id: 2,
+  //   symbol: '0056',
+  //   buyThreshold: 1,
+  //   sellThreshold: 1,
+  //   isActive: true,
+  //   currentPrice: 34.5,
+  //   lastClosePrice: 36.1,
+  //   currentBias: -3
+  // }];
+
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  // 進入編輯模式
+  startEdit(index: number) {
+    this.editingId = index;
+  }
+
+  // 儲存
+  saveEdit(index: number) {
+    if (this.editingId === null) return;
+    const updatedStrategy = this.strategies[this.editingId];
+    console.log(updatedStrategy);
+    // 這裡執行 API 更新邏輯
+    this.httpClientService.putApi(`http://localhost:8080/api/strategy-set/${updatedStrategy.id}`,updatedStrategy)
+    .subscribe((res:any) => {
+      if(!res.data) {return;}
+      else{
+        console.log("錯誤代碼:"+res.code + ", 錯誤訊息:"+res.message);
+        this.editingId = null;
+      }
+      // this.strategies = [...res.data];
+
+    });
+
+  }
+  // 取消
+  cancelEdit() {
+    this.editingId = null;
+  }
+
+  //觸發dialog
+  readonly dialog = inject(MatDialog);
+  addStrategy(userId:number){
 
 
-  addStrategy(){
+    let newStrategy:StrategySetting={
+      id:this.userid,//借放userid
+      symbol: '',
+      buyThreshold: 0,
+      sellThreshold: 0,
+      isActive: false
+    };
+    // 開一個變數dialog用來存放你開啟的那個dialog
+    let dialogRef = this.dialog.open(DialogAddStrategyComponent,{
+      data: newStrategy
+      ,width: '500px'
+      // ,height: AUTO_STYLE
+    });
+    // 去偵測dialogRef這個dialog甚麼時候關閉
+    dialogRef.afterClosed().subscribe((res) =>{
+      //如果傳遞出來的資料有值，才進入if執行動作
+      if(res){
+        console.log(res);
+        this.loadData();
+      }
+
+    })
+  }
+
+  onDelete(index: number){
+
+    this.httpClientService.delApi(`http://localhost:8080/api/strategy-set/${this.strategies[index].id}`)
+    .subscribe((res:any) => {
+      if (res.code === 200) {
+        // 畫面移除這張卡片
+        this.strategies = this.strategies.filter(s => s.id !== this.strategies[index].id);
+      }
+
+    });
 
   }
 
-  toggleActive(symbol:string){
+  loadData(){
+    console.log("LoadData...");
+    this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/user/${this.userid}`)
+    .subscribe((res:any) => {
+      if(!res.data) return;
+      this.strategies = res.data.map((item: any): StrategySetting => {
+        return {
+          id: item.id,
+          symbol: item.symbol,
+          buyThreshold: item.buyThreshold,
+          sellThreshold: item.sellThreshold,
+          isActive: item.isActive,
+          currentPrice: 0,
+          currentBias: 0,
+          lastClosePrice: 0
+        };
+      });
 
-  }
-  onDeleteMode(){
 
+      this.strategies.forEach(s=>{
+        this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/quote/${s.symbol}`)
+        .subscribe((res:any) => {
+          s.currentPrice=res.data?.currentPrice ?? 0;
+          s.currentBias= (res.data?.currentBias ?? 0 )*100;
+        });
+      });
+      console.log(this.strategies);
+
+    });
   }
 }

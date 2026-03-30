@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { QuestionaireElement } from '../questionaire-list/questionaire-list.component';
-import { QuestionnaireApi, Question, Option,
-         UserAnswer, QuestSet, QuestType } from '../@interface/questionnaire-api';
 
 
 @Injectable({
@@ -18,21 +15,6 @@ export class ExampleService {
   userName!: string;
   userEmail!: string;
   userAge!: number;
-
-  // Questionaire --> QuestionaireList & QuestionaireList <--> QuestionaireFront &
-  userType!: string;
-  // QuestionaireList <--> QuestionaireFront
-  questionInfo!:Array<QuestionaireElement>;
-  // QuestionaireList --> QuestionaireSet
-  userAct!:string;
-  questionnaireId!:number;
-  // QuestionaireSet --> QuestionaireRead
-  questionSet!:QuestSet;
-  // QuestionaireSetDetail --> QuestionaireRead
-  questionDetail!:Array<QuestType>;
-  userAnswer!:UserAnswer;
- // QuestionaireFeedBack --> QuestionaireRead
-  responseId:number| null = null;
 
   //to-do Add
   // inputNewItem!: Array<string> ;
