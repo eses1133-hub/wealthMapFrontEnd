@@ -1,18 +1,82 @@
-<!-- <br> -->
-<!-- 置中 -->
-<div class="frameCss">
-  <!-- header -->
-  <div class="headerCss">
+<div style="padding: 30px; font-family: 'Microsoft JhengHei', sans-serif; max-width: 1200px; margin: 0 auto;">
+  <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">資產再平衡試算系統</h2>
 
- <!-- logo的位置 -->
- <label class="logo">WM</label>
+  <div style="margin-bottom: 30px; display: flex; gap: 12px; align-items: flex-start; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
 
- @if( role== "visitor" ){
- <button class="loginBtn">登&nbsp;入</button>
- }
- @else{
- <label class="headerText">XXX，歡迎使用</label>
- }
+    <div style="position: relative; flex: 1.5;">
+      <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">代號 (如: 2317)</label>
+      <input [(ngModel)]="newAsset.symbol" (input)="onSymbolInput()" placeholder="輸入代號" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+
+      <ul *ngIf="filteredStocks.length > 0" style="position: absolute; top: 58px; left: 0; width: 100%; background: white; border: 1px solid #ccc; z-index: 100; list-style: none; padding: 0; margin: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 4px;">
+        <li *ngFor="let stock of filteredStocks" (click)="selectStock(stock)" style="padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; transition: background 0.2s;">
+          <strong style="color: #007bff;">{{stock.symbol}}</strong> - {{stock.name}}
+        </li>
+      </ul>
+    </div>
+
+    <div style="flex: 1.5;">
+      <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">名稱</label>
+      <input [(ngModel)]="newAsset.name" placeholder="股票名稱" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="flex: 1;">
+      <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">成本價</label>
+      <input [(ngModel)]="newAsset.currentPrice" type="number" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="flex: 1;">
+      <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">股數</label>
+      <input [(ngModel)]="newAsset.sharesOwned" type="number" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="flex: 1;">
+      <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">目標比例(%)</label>
+      <input [(ngModel)]="newAsset.targetPercentage" type="number" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <button (click)="addAsset()" style="margin-top: 22px; padding: 10px 25px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">新增</button>
   </div>
+
+  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+    <button (click)="calculateRebalance()" style="padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      ⚡ 開始試算再平衡
+    </button>
+    <div *ngIf="totalMarketValue > 0" style="font-size: 18px; color: #444; background: #fff3cd; padding: 10px 20px; border-radius: 6px; border: 1px solid #ffeeba;">
+      目前總市值：<span style="color: #d9534f; font-weight: bold;">${{ totalMarketValue | number }}</span> 元
+    </div>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: #343a40; color: white;">
+        <th style="padding: 15px;">代號</th>
+        <th style="padding: 15px;">名稱</th>
+        <th style="padding: 15px;">成本價</th>
+        <th style="padding: 15px;">股數</th>
+        <th style="padding: 15px; background: #343a40;">當前比例</th> <th style="padding: 15px;">目標比例</th>
+        <th style="padding: 15px; background: #dc3545;">操作建議</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let asset of assets" style="border-bottom: 1px solid #eee;">
+        <td style="padding: 15px; text-align: center;">{{asset.symbol}}</td>
+        <td style="padding: 15px;">{{asset.name}}</td>
+        <td style="padding: 15px; text-align: right;">${{asset.currentPrice | number}}</td>
+        <td style="padding: 15px; text-align: right;">{{asset.sharesOwned | number}} 股</td>
+
+        <td style="padding: 15px; text-align: center; font-weight: bold; color: #555;">
+          {{ (asset.currentPercentage || 0) | number:'1.2-2' }}%
+        </td>
+
+        <td style="padding: 15px; text-align: center;">{{asset.targetPercentage}}%</td>
+
+        <td style="padding: 15px; text-align: center; font-weight: bold; color: #0056b3;">
+          {{ asset.suggestion || '--' }}
+        </td>
+      </tr>
+      <tr *ngIf="assets.length === 0">
+        <td colspan="7" style="padding: 30px; text-align: center; color: #999;">請先新增資產以開始計算</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<router-outlet></router-outlet>
