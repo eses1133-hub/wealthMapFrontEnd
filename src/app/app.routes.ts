@@ -46,7 +46,6 @@ export const routes: Routes = [
     canActivate: [authGuard],    // 💡 只要進到 /admin 開頭的，都要檢查
     data: { roles: ['ADMIN'] },  // 💡 統一要求管理員權限
     children: [
-      { path: "main", component: AdminMainComponent },
       { path: "notification-set", component: AdminNotificationSetComponent },
       { path: "notification-set/:pageId", component: AdminNotificationSetComponent },
       { path: 'news', component: AdminNewsComponent },

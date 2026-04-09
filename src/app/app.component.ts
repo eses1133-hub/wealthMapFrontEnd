@@ -29,12 +29,7 @@ export class AppComponent {
   }
 
   home() {
-    if(this.role === 'ADMIN'){
-      this.router.navigate(['/admin/main']);
-    }else{
       this.router.navigate(['/main']);
-    }
-
   }
 
   setAboutUs() {

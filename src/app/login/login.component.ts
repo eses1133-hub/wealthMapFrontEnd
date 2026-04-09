@@ -95,14 +95,14 @@ export class LoginComponent {
             this.exampleService.user$.subscribe(newUser => {
               this.role = newUser.role;
               console.log(this.role);
-              if(this.role==="USER" || this.role==="visitor"){
+              // if(this.role==="USER" || this.role==="visitor"){
 
                 console.log("進入main");
                 this.router.navigate(['/main']);
-              }else if(this.role==="ADMIN"){
-                console.log("進入admin main");
-                this.router.navigate(['/admin/main']);
-              }
+              // }else if(this.role==="ADMIN"){
+                // console.log("進入admin main");
+                // this.router.navigate(['/admin/main']);
+              // }
             });
 
 
