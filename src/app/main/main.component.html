@@ -1,4 +1,4 @@
-@if( role=="user"){
+@if( role=="USER"){
 <div class="frameCss">
   <div class="personal-carousel">
     <div class="personal-container" [style.transform]="'translateX(' + (-currentIndex * 100) + '%)'">
@@ -31,8 +31,8 @@
 <div class="frameCss">
 
   <div class="iconbox">
-    @if(role=="user"){
-    <button class="iconbtn" (click)="goToAssets()" style="cursor: pointer;">
+    @if(role=="USER"){
+    <button class="iconbtn">
       <img style="width: 80px;height: 60px;" src="16220 (1).png">
       <br><br>
       <label style="font-size: 16px;">我的資產</label>
@@ -48,7 +48,7 @@
       <br><br>
       <label style="font-size: 16px;">投資策略</label>
     </button>
-    <button class="iconbtn" (click)="goToGoals()" style="cursor: pointer;">
+    <button class="iconbtn">
       <img style="width: 90px;height: 80px;" src="12260 (3).png">
       <br><br>
       <label style="font-size: 16px;">財務目標</label>
@@ -82,12 +82,16 @@
       @for(news of visibleNews; track $index) {
         <div class="news-card" (click)="goNewsUrl(news.url)">
           <div class="card-content">
-            <span class="news-tag">{{news.sourceName}}</span>
-            <img [src]="news.image" class="news-img">
+            <span class="news-tag">{{news?.sourceName}}</span>
+            <img [src]="news?.image" class="news-img">
             <br>
+            @if (news && news.publishedAt) {
             <span style="color:#4091c9">{{news.publishedAt.split('T')[0]}}</span>
-            <p >{{news.title}}</p>
-            <p class="newscontent">{{news.content}}</p>
+            }@else {
+    <span>載入中...</span>
+  }
+            <p class="news-title">{{news?.title}}</p>
+            <p class="news-content">{{news?.content}}</p>
           </div>
           <div class="card-footer">
              <label class="wealth-switch">

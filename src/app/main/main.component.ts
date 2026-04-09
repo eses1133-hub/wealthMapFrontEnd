@@ -134,7 +134,7 @@ export class MainComponent {
   ngAfterViewInit() {
 
     // 確認是使用者後才會生成圓餅圖
-    if (this.role === 'user') {
+    if (this.role === 'USER') {
       // 獲取 canvas 元素
       let ctx = document.getElementById('chart') as HTMLCanvasElement;
 
@@ -228,6 +228,10 @@ export class MainComponent {
 
   // 限制新聞出現的數量 目前設定為8則 ((定義Getter 讓HTML直接對它跑迴圈
   get visibleNews() {
+    // 💡 增加檢查：如果新聞列表還沒抓到，先回傳空陣列，避免 HTML 報錯
+  if (!this.newsList || this.newsList.length === 0) {
+    return [];
+  }
     const list = [];
     for (let i = 0; i < this.displayCount; i++) {
       // 💡 使用取餘數 (%) 運算子，讓索引永遠在 0~7 之間循環
