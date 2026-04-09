@@ -57,7 +57,8 @@
       <img style="width: 100px;height: 70px;" src="9179 (2).png">
       <br><br>
       <label style="font-size: 16px;">風險評估</label>
-    </button>}
+    </button>
+    }
   </div>
 </div>
 
@@ -68,7 +69,7 @@
   <div style="font-size: 28px;font-weight: bold;">相關新聞</div>
 </div>
 <div class="frameCss">
-<hr style="width: 10%; border: none; height: 1px; background-color: #9dcee2; ">
+  <hr style="width: 10%; border: none; height: 1px; background-color: #9dcee2; ">
 </div>
 <br>
 <div class="carousel-container">
@@ -79,25 +80,25 @@
   <div class="news-window">
     <div class="news-track">
       @for(news of visibleNews; track $index) {
-        <div class="news-card" (click)="goNewsUrl(news.url)">
-          <div class="card-content">
-            <span class="news-tag">{{news?.sourceName}}</span>
-            <img [src]="news?.image" class="news-img">
-            <br>
-            @if (news && news.publishedAt) {
-            <span style="color:#4091c9">{{news.publishedAt.split('T')[0]}}</span>
-            }@else {
-    <span>載入中...</span>
-  }
-            <p class="news-title">{{news?.title}}</p>
-            <p class="news-content">{{news?.content}}</p>
-          </div>
-          <div class="card-footer">
-             <label class="wealth-switch">
-                <span class="slider"></span>
-             </label>
-          </div>
+      <div class="news-card" (click)="goNewsUrl(news.url)">
+        <div class="card-content">
+          <span class="news-tag">{{news?.sourceName}}</span>
+          <img [src]="news?.image" class="news-img">
+          <br>
+          @if (news && news.publishedAt) {
+          <span style="color:#4091c9">{{news.publishedAt.split('T')[0]}}</span>
+          }@else {
+          <span>載入中...</span>
+          }
+          <p class="news-title">{{news?.title}}</p>
+          <p class="news-content">{{news?.content}}</p>
         </div>
+        <div class="card-footer">
+          <label class="wealth-switch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
       }
     </div>
   </div>
@@ -115,14 +116,13 @@
   <div style="font-size: 28px;font-weight: bold;">系統通知</div>
 </div>
 <div class="frameCss">
-<hr style="width: 10%; border: none; height: 1px; background-color: #9dcee2; ">
+  <hr style="width: 10%; border: none; height: 1px; background-color: #9dcee2; ">
 </div>
 
 <div class="frameCss" style="margin: 20px;">
   <div style="width: 70%; border-color: #4091c9;">
     @for(notification of notificationList?.data ; track $index){
-    @if(notification.scheduledDate<=gettoday){
-      <div class="system">
+    @if(notification.scheduledDate<=gettoday){ <div class="system">
       <label class="notification-tag" (click)="detail(notification.id!)">{{notification.tag}}</label>
       <label class="notification-title" (click)="detail(notification.id!)">{{notification.title}}</label>
       <label style="position: absolute;right:20px"
