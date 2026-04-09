@@ -34,13 +34,18 @@ export class HttpClientService {
   }
 
   //新增
-  postApi(url:string,postData:any){
-    return this.httpClient.post(url,postData);
+  postApi(url:string,postData:any={}, options: any = {}){
+    return this.httpClient.post(url,postData, options);
   }
 
   //更改
   putApi(url:string,putData:any){
     return this.httpClient.put(url,putData);
+  }
+
+  //更改
+  patchApi(url:string,patchData:any){
+    return this.httpClient.patch(url,patchData);
   }
 
   //刪除

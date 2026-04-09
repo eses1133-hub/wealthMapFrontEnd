@@ -1,0 +1,72 @@
+@if(data==1){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">有題目尚未填寫!</label>
+<div style="height:50px"></div>
+
+<div class="btn-position">
+<button (click)="close()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+
+@if(data==2){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">註冊成功!</label>
+<div style="height:50px"></div>
+
+<div class="btn-position">
+<button (click)="login()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+@if(data==3){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">臨時密碼以傳送至Email</label>
+<div style="height:50px"></div>
+
+<div  class="btn-position">
+<button (click)="email()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+
+@if(data==4){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">登入成功，請立即修改密碼</label>
+<div style="height:50px"></div>
+
+<div class="btn-position">
+<button (click)="changePwd()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+
+@if(data==5){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">密碼修改成功</label>
+<div style="height:50px"></div>
+
+<div  class="btn-position">
+<button (click)="changePwd()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+
+@if(data==6){
+<div class="header"></div>
+<div style="height:50px"></div>
+<label class="text">舊密碼輸入錯誤!</label>
+<div style="height:50px"></div>
+
+<div  class="btn-position">
+<button (click)="changePwd()">確認</button>
+<!-- <button (click)="cancel()">取消</button> -->
+</div>
+}
+
+

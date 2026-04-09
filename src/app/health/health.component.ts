@@ -81,6 +81,7 @@ export class HealthComponent implements OnInit {
     this.loadHealthData();
   }
 
+
   submit(): void {
     this.healthService.postHealth(this.form).subscribe({
       next: (res: HealthResponse) => {

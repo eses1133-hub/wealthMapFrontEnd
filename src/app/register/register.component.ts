@@ -1,13 +1,17 @@
 import { Router, RouterLink } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from "../header/header.component";
 import { FormsModule } from '@angular/forms';
-import { WealthService } from '../wealthservice.service';
-import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { HttpClientService } from '../@service/http-client.service';
+import { InvalidComponent } from '../@dialog/invalid/invalid.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ExampleService } from '../@service/example.service';
+
 
 @Component({
   selector: 'app-register',
-  imports: [HeaderComponent, FormsModule,RouterLink],
+  imports: [HeaderComponent, FormsModule, RouterLink, MatIconModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -17,48 +21,128 @@ export class RegisterComponent {
   password = '';
   showPassword = false;
 
-  constructor(
-    private router:Router,
-    // private wealthService:WealthService,
-    // private http: HttpClient
-  ){}
+  emailErrorMsg = '';
+  passwordErrorMsg = '';
+  nameErrorMsg = '';
+  termErrorMsg = '';
+
+  isAccept: boolean = false;
+
+  constructor(private router: Router,
+    private httpClientService: HttpClientService,
+    private exampleService: ExampleService) {
+  }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
-  get isNameInvalid(): boolean {
-    return this.name.length > 0;//可增加字數限制
-  }
-  get isEmailInvalid(): boolean {
-    const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
-    return this.email.length > 0 && !emailRule.test(this.email);
-  }
-  get isPasswordLengthInvalid(): boolean {
-    const passRule = /^[a-zA-Z0-9]{8,12}$/;
-    return this.password.length > 0;
-  }
 
-  register(){
-      this.router.navigate(['/login']);
+
+  validate(field: 'name' | 'email' | 'password' | 'isAccept'): void {
+    const emailRule = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (field === 'name') {
+      if (!this.name) {
+        this.nameErrorMsg = '*此為必填欄位';
+      } else {
+        this.nameErrorMsg = ''; // 格式正確就清空訊息
+      }
     }
 
-  // register(){
-  //   const registerData = {
-  //     name: this.name,
-  //     email: this.email,
-  //     password: this.password
-  //   };
+    if (field === 'email') {
+      if (!this.email) {
+        this.emailErrorMsg = '*此為必填欄位';
+      } else if (!emailRule.test(this.email)) {
+        this.emailErrorMsg = 'Email 格式不正確';
+      } else {
+        this.emailErrorMsg = ''; // 格式正確就清空訊息
+      }
+    }
 
-  //   this.wealthService.createUser(registerData).subscribe({
-  //     next: (res) => {
-  //       console.log('註冊成功', res);
-  //       alert('註冊成功！');
-  //       this.router.navigate(['/login']);
-  //     },
-  //     error: (err) => {
-  //       console.error('註冊失敗', err);
-  //       alert('註冊發生錯誤');
-  //     }
-  //   });
-  // }
+    if (field === 'password') {
+      if (!this.password) {
+        this.passwordErrorMsg = '*此為必填欄位';
+      } else if (this.password.length < 8 || this.password.length > 12) {
+        this.passwordErrorMsg = '密碼長度須為 8-12 位';
+      } else {
+        this.passwordErrorMsg = '';
+      }
+    }
+    if (field === 'isAccept') {
+      if (!this.isAccept) {
+        this.termErrorMsg = '*請確認條款內容';
+      } else {
+        this.termErrorMsg = '';
+      }
+    }
+  }
+
+  readonly dialog = inject(MatDialog);
+  showDialog(no:number) {
+      // 單選
+      //let dialogRef 是宣告一個變數 讓系統知道我們現在要接收哪個dialog
+      //(要開啟的dialog頁面的名稱, {要傳遞的值和設定})
+      let dialogRef = this.dialog.open(InvalidComponent, {
+        // data: {choise:choise,id:this.notificationList.data[index].id},
+        data:no,
+        width: '250px',
+        height: '180px'
+      });
+      //去偵測dialogRef這個dialog甚麼時候關閉
+      //如果dialog結束有傳值出來 res就是那個值
+      dialogRef.afterClosed().subscribe((res) => {
+        //如果有值傳遞出來
+        if (res) {
+          // setTimeout(()=>{
+          console.log(res);
+          // },3000)
+        }
+      })
+    }
+
+  register() {
+    this.validate('name');
+    this.validate('email');
+    this.validate('password');
+    this.validate('isAccept');
+
+    // 2. 最終檢查：只要錯誤訊息都是空的，就代表格式全部正確
+    if (!this.nameErrorMsg && !this.emailErrorMsg && !this.passwordErrorMsg && !this.termErrorMsg) {
+      const loginData = {
+        name: this.name,
+        email: this.email,    // 左邊是給後端看的「標籤」，右邊是你存的「資料」
+        password: this.password
+      };
+      console.log('格式正確，執行登入 API');
+      this.httpClientService.postApi(`http://localhost:8080/api/auth/register`, loginData)
+        .subscribe((register: any) => {
+          if (register.code == 409) {
+            console.log('已註冊過');
+            this.emailErrorMsg = '此 Email 已註冊過';
+            return;
+          }
+          else {
+            console.log('註冊成功');
+            this.emailErrorMsg = '';
+            if (register.token) {
+              localStorage.setItem('token', register.token);
+            } else if (register.data && register.data.token) {
+              localStorage.setItem('token', register.data.token);
+            }
+
+            // 💡 優先使用後端回傳的角色，如果沒有才用 'user'
+            const role = register.role || (register.data && register.data.role) || 'USER';
+            this.exampleService.setRole(role);
+            this.showDialog(2);
+          }
+
+        })
+    }
+  }
+
+
+
+  ngOnInit(): void {
+    this.isAccept = false;
+  }
 }
