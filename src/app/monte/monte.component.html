@@ -77,7 +77,16 @@
       <div class="chart-container-white">
         <div echarts [options]="historyLineOption" class="actual-chart"></div>
       </div>
-      <!-- <div class="market-detail">投資市場<br>(細節)</div> -->
+        <div class="describe-section">
+          <p class="title">📈 投資資產成長模擬說明</p>
+          <p>本系統採用 <strong>蒙地卡羅(Monte Carlo)</strong> 演算法，透過數千次隨機路徑抽樣，整合通膨與波動率，勾勒出未來資產曲線：</p>
+          <ul>
+            <li><span>較佳預期：</span>市場表現優異時的潛在增長空間。</li>
+            <li><span>一般表現：</span>最具參考價值的平均成長路徑。</li>
+            <li><span>較差預期：</span>考慮市場下行風險時的防守底線。</li>
+          </ul>
+          <p class="footer">※ 本模擬僅供策略參考，不保證實際投資收益。</p>
+        </div>
     </div>
 
   </div>
