@@ -79,7 +79,7 @@ export class MainComponent {
     this.isMenuOpen = false;
     // 之後要清空使用者資料
     // this.exampleService.setRole('visitor');
-     // 💡 清空使用者資料並清除 localStorage
+    // 💡 清空使用者資料並清除 localStorage
     this.exampleService.clearRole();
   }
   // 個人通知格式
@@ -119,9 +119,21 @@ export class MainComponent {
     this.router.navigate(['/risk-test']);
   }
 
+  goToAssets() {
+    this.router.navigate(['/assets']);
+  }
+  goToGoals() {
+    this.router.navigate(['/goals']);
+  }
+
   closeNotice() {
     const notice = document.getElementById('notification');
     notice?.remove();
+  }
+
+  investmentManage(){
+    console.log("InvestmentManage");
+    this.router.navigate(['/investment-manage']);
   }
 
   ngAfterViewInit() {
@@ -248,14 +260,15 @@ export class MainComponent {
 
   ngOnInit() {
 
+
     console.log(this.activatedRoute.snapshot.paramMap.get('pageId'));
     this.activatedRoute.params.subscribe(params => {
       const pageId = params['pageId']; // 確保這裡的名稱跟 AppRoutingModule 定義一致
 
-      //取得系統公告列表
+      //取得公告列表
       this.httpClientService.getApi(`http://localhost:8080/api/notifications/list`)
         .subscribe((notificationList: any) => {
-          console.log(notificationList);
+          // console.log(notificationList);
           this.notificationList = notificationList;
         })
 
@@ -270,9 +283,13 @@ export class MainComponent {
       }
     });
 
-    this.exampleService.role$.subscribe(newRole => {
-      this.role = newRole;
-      console.log('MainComponent 收到身分變更：', this.role);
+    // this.exampleService.role$.subscribe(newRole => {
+    //   this.role = newRole;
+    // });
+    // console.log('現在身分', this.role);
+
+    this.exampleService.user$.subscribe(newUser => {
+      this.role = newUser.role;
     });
     console.log('現在身分', this.role);
 
