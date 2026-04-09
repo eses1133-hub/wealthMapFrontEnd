@@ -40,13 +40,13 @@ export class HeaderUserComponent {
   detail(pageId: number) {
     // 1. 呼叫已讀 API (POST)
     // this.httpClientService.postApi(`http://localhost:8080/api/notifications/read?userId=${this.userId}&notificationId=${id}`, {})
-    this.httpClientService.postApi(`http://localhost:8080/api/notifications/read?userId=5&notificationId=${pageId}`, {})
+    this.httpClientService.postApi(`http://localhost:8080/api/notifications/read?userId=11&notificationId=${pageId}`, {})
       .subscribe(() => {
         // 標記成功後，刷新紅點數字
         this.refreshUnreadCount();
 
         // 重新抓取列表，這樣 notificationList 裡的 hasRead 就會變成 true
-      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=5`)
+      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=11`)
         .subscribe((res: any) => {
           this.notificationList = res;
           // 💡 C. 列表更新完後，再跳轉
@@ -60,7 +60,7 @@ export class HeaderUserComponent {
   // 取得未讀數量
   refreshUnreadCount() {
     // this.httpClientService.getApi(`http://localhost:8080/api/notifications/unread-count?userId=${this.userId}`)
-    this.httpClientService.getApi(`http://localhost:8080/api/notifications/unread-count?userId=5`)
+    this.httpClientService.getApi(`http://localhost:8080/api/notifications/unread-count?userId=11`)
       .subscribe((unreadCount: any) => {
         console.log('系統通知未讀', unreadCount.data);
         if (unreadCount && unreadCount.code === 200) {
@@ -152,7 +152,7 @@ export class HeaderUserComponent {
     this.isNotificationOpen = false;
 
       //取得當前使用者的公告列表(含以讀未讀狀態)
-      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=5`)
+      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=11`)
         .subscribe((notificationList: any) => {
           console.log('使用者的公告列表',notificationList);
           this.notificationList = notificationList;

@@ -41,8 +41,8 @@ export class ProfileComponent {
     if (field === 'oldPassword') {
       if (!this.oldPassword) {
         this.oldPasswordErrorMsg = '*此為必填欄位';
-      } else if (this.oldPassword.length < 7 || this.oldPassword.length > 12) {
-        this.oldPasswordErrorMsg = '*密碼長度須為 7-12 位';
+      } else if (this.oldPassword.length < 8 || this.oldPassword.length > 12) {
+        this.oldPasswordErrorMsg = '*密碼長度須為 8-12 位';
       } else {
         this.oldPasswordErrorMsg = '';
       }
@@ -50,8 +50,8 @@ export class ProfileComponent {
     if (field === 'newPassword') {
       if (!this.newPassword) {
         this.newPasswordErrorMsg = '*此為必填欄位';
-      } else if (this.newPassword.length < 7 || this.newPassword.length > 12) {
-        this.newPasswordErrorMsg = '*密碼長度須為 7-12 位';
+      } else if (this.newPassword.length < 8 || this.newPassword.length > 12) {
+        this.newPasswordErrorMsg = '*密碼長度須為 8-12 位';
       } else {
         this.newPasswordErrorMsg = '';
       }
@@ -115,6 +115,7 @@ export class ProfileComponent {
         oldPassword: this.oldPassword,
         newPassword: this.newPassword
       };
+      //為了寫error 所以改成next的方式
       this.httpClientService.postApi(`http://localhost:8080/api/auth/change-password`, newpwd, { headers })
         .subscribe({
           next: (changePwd: any) => {
