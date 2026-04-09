@@ -11,22 +11,22 @@ import { InputTextModule } from 'primeng/inputtext';
             <input type="text" pInputText pTooltip="Enter your username" placeholder="autoHide: true" />
         </div>
     `,
-    standalone: true,
+  standalone: true,
   selector: 'app-profile',
-  imports: [RouterLink, RouterLinkActive, TooltipModule, FormsModule,InputTextModule],
+  imports: [RouterLink, RouterLinkActive, TooltipModule, FormsModule, InputTextModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
 
-email = "flower543@gmail.com";
-changePwd:boolean = false;
+  email = "flower543@gmail.com";
+  changePwd: boolean = false;
 
-toChangePwd(){
-this.changePwd = true;
-}
-cancle(){
-  this.changePwd = false;
-}
+  toChangePwd() {
+    this.changePwd = true;
+  }
+  cancle() {
+    this.changePwd = false;
+  }
 
 }
