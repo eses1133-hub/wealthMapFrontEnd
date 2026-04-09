@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QuestionaireElement } from '../questionaire-list/questionaire-list.component';
-import { QuestionnaireApi, Question, Option,
-         UserAnswer, QuestSet, QuestType } from '../@interface/questionnaire-api';
-
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,46 +10,35 @@ import { QuestionnaireApi, Question, Option,
 
 
 export class ExampleService {
-  // 設定service欲傳輸的全域變數
-  sendData!: string;
-  userName!: string;
-  userEmail!: string;
-  userAge!: number;
 
-  // Questionaire --> QuestionaireList & QuestionaireList <--> QuestionaireFront &
-  userType!: string;
-  // QuestionaireList <--> QuestionaireFront
-  questionInfo!:Array<QuestionaireElement>;
-  // QuestionaireList --> QuestionaireSet
-  userAct!:string;
-  questionnaireId!:number;
-  // QuestionaireSet --> QuestionaireRead
-  questionSet!:QuestSet;
-  // QuestionaireSetDetail --> QuestionaireRead
-  questionDetail!:Array<QuestType>;
-  userAnswer!:UserAnswer;
- // QuestionaireFeedBack --> QuestionaireRead
-  responseId:number| null = null;
+  private readonly ROLE_KEY = 'user_role';
 
-  //to-do Add
-  // inputNewItem!: Array<string> ;
-  inputNewItem: Array<any> = [
-    {
-      id:"test",
-      state:"incomplete",
-      startDate:"26/1/12, 13:48"
-    },
-    {
-      id:"test1",
-      state:"incomplete",
-      startDate:"26/1/12, 13:49"
-    }];
-  editItem!:Array<any>;
+  constructor() {
+    // 初始化時，先從 localStorage 讀取先前存的身分
+    const savedRole = localStorage.getItem(this.ROLE_KEY);
+    if (savedRole) {
+      this.roleSource.next(savedRole);
+    }
+  }
+  private roleSource = new BehaviorSubject<string>('visitor');
 
-  //weather selected
-  dataInfo!:Array<any>;
-  selectedConent!:string;
+  // 💡 2. 暴露一個 Observable 讓所有組件監聽
+  role$ = this.roleSource.asObservable();
 
+  // 💡 3. 登入成功時呼叫此方法
+  setRole(newRole: string) {
+    localStorage.setItem(this.ROLE_KEY, newRole); // 存入 localStorage
+    this.roleSource.next(newRole);
+  }
 
-  constructor() { }
+  // 獲取目前數值 (同步)
+  get currentRole() {
+    return this.roleSource.value;
+  }
+  // 登出時清除
+  clearRole() {
+    localStorage.removeItem(this.ROLE_KEY);
+    localStorage.removeItem('token'); // 同時清除 token
+    this.roleSource.next('visitor');
+  }
 }

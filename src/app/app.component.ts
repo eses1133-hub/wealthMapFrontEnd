@@ -1,87 +1,73 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-interface Asset {
-  symbol: string;
-  name: string;
-  currentPrice: number;
-  sharesOwned: number;
-  targetPercentage: number;
-  currentPercentage?: number; // 新增：當前比例
-  suggestion?: string;
-}
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { HeaderAdminComponent } from './header/header-admin/header-admin.component';
+import { HeaderUserComponent } from './header/header-user/header-user.component';
+import { HeaderVisitorComponent } from './header/header-visitor/header-visitor.component';
+import { ExampleService } from './@service/example.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [RouterOutlet, HeaderAdminComponent, HeaderUserComponent, HeaderVisitorComponent,],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  newAsset: Asset = { symbol: '', name: '', currentPrice: 0, sharesOwned: 0, targetPercentage: 0 };
-  assets: Asset[] = [];
-  filteredStocks: any[] = [];
-  totalMarketValue: number = 0;
+  title = 'wealthMap';
+  // 三種身分 visitor;user;admin
+  // role!:string ;
+  role = 'visitor';
+  constructor(
+    private router: Router,
+    private exampleService: ExampleService,) { }
 
-  constructor(private http: HttpClient) {}
-
-  // 搜尋股票 (打 23 跑出選單)
-  onSymbolInput() {
-    const query = this.newAsset.symbol;
-    if (query && query.length >= 2) {
-      this.http.get<any[]>(`http://localhost:8080/api/search?q=${query}`)
-        .subscribe({
-          next: (data) => this.filteredStocks = data,
-          error: (err) => console.error('搜尋失敗', err)
-        });
-    } else {
-      this.filteredStocks = [];
-    }
+  login() {
+    this.router.navigate(['/login']);
+  }
+  register() {
+    this.router.navigate(['/register']);
   }
 
-  selectStock(stock: any) {
-    this.newAsset.symbol = stock.symbol;
-    this.newAsset.name = stock.name;
-    this.filteredStocks = [];
+  homeAdmin() {
+    this.router.navigate(['/admin/notification-set']);
   }
 
-  addAsset() {
-    if (this.newAsset.symbol && this.newAsset.name) {
-      this.assets.push({ ...this.newAsset });
-      this.newAsset = { symbol: '', name: '', currentPrice: 0, sharesOwned: 0, targetPercentage: 0 };
-    }
+  home() {
+    this.router.navigate(['/main']);
   }
 
-  // 核心計算邏輯
-  calculateRebalance() {
-    // 1. 先算總市值
-    this.totalMarketValue = this.assets.reduce((sum, asset) =>
-      sum + (asset.currentPrice * asset.sharesOwned), 0);
+  setAboutUs() {
+    console.log("AboutUs");
+    this.router.navigate(['/information']);
+  }
 
-    // 2. 算每一檔的當前比例與建議
-    this.assets.forEach(asset => {
-      const currentValue = asset.currentPrice * asset.sharesOwned;
+  setService() {
+    console.log("Term of Service");
+    this.router.navigate(['/service']);
+  }
 
-      // 當前比例計算
-      asset.currentPercentage = this.totalMarketValue > 0
-        ? (currentValue / this.totalMarketValue) * 100
-        : 0;
+  setPrivacyPolicy() {
+    console.log("Privacy Policy");
+    this.router.navigate(['/privacy']);
+  }
 
-      // 試算建議
-      const targetValue = this.totalMarketValue * (asset.targetPercentage / 100);
-      const diff = targetValue - currentValue;
-      const sharesToAdjust = Math.round(diff / asset.currentPrice);
+  ngOnInit() {
+    this.exampleService.role$.subscribe(newRole => {
+      this.role = newRole;
+      console.log('MainComponent 收到身分變更：', this.role);
+    });
+    console.log('現在身分', this.role);
 
-      if (sharesToAdjust > 0) {
-        asset.suggestion = `建議買入 ${sharesToAdjust} 股`;
-      } else if (sharesToAdjust < 0) {
-        asset.suggestion = `建議賣出 ${Math.abs(sharesToAdjust)} 股`;
-      } else {
-        asset.suggestion = `比例正確`;
-      }
+    // 💡 監聽所有的路由事件 -> 讓footer的按鈕按了以後可以跳回頁面的最上面
+    this.router.events.pipe(
+      // 只過濾出「導航結束 (NavigationEnd)」的事件
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // 🚀 只要導航結束，就立刻跳回最頂端
+      window.scrollTo(0, 0);
+      // 或者如果你想要平滑一點的滾動效果：
+      // window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+
 }
