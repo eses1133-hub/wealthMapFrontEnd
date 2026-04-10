@@ -71,22 +71,24 @@ export const routes: Routes = [
     data: { roles: ['ADMIN', 'USER'] }
   },
   // 投資管理
-  { path: 'investment-manage',
+  {
+    path: 'investment-manage',
     component: InvestmentManageComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
-  { path: 'strategy-list',
+  {
+    path: 'strategy-list',
     component: StrategyListComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
-  // {
-  //   path: 'assets',
-  //   component: AssetOverviewComponent,
-  //   canActivate: [authGuard],
-  //   data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
-  // },
+  {
+    path: 'assets',
+    component: AssetOverviewComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
+  },
 
   {
     path: 'goals',
