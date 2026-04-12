@@ -83,6 +83,18 @@ export const routes: Routes = [
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
+    path: 'monte',
+    component: MonteComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+  {
+    path: 'health',
+    component: HealthComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+  {
     path: 'assets',
     component: AssetOverviewComponent,
     canActivate: [authGuard],
@@ -95,10 +107,6 @@ export const routes: Routes = [
     //canActivate: [authGuard],
     //data: { roles: ['ADMIN', 'USER'] }
   },
-
-  { path: 'health', component: HealthComponent },
-  { path: 'monte', component: MonteComponent },
-  // { path: 'forgot', component: ForgotComponent },
 
   // 萬用路由（必須放在陣列的最下方）
   { path: '**', redirectTo: 'main', pathMatch: 'full' }
