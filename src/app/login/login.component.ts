@@ -87,12 +87,13 @@ export class LoginComponent {
 
             // 💡 儲存 Token (如果有回傳的話)
             if (login.token) {
-              localStorage.setItem('token', login.token);
+              sessionStorage.setItem('token', login.token);
             } else if (login.data && login.data.token) {
-              localStorage.setItem('token', login.data.token);
+              sessionStorage.setItem('token', login.data.token);
             }
 
             this.exampleService.user$.subscribe(newUser => {
+              console.log(newUser);
               this.role = newUser.role;
               console.log(this.role);
               if(this.role==="USER" || this.role==="visitor"){
@@ -104,8 +105,6 @@ export class LoginComponent {
                 this.router.navigate(['/admin/main']);
               }
             });
-
-
             // // 💡 優先使用後端回傳的角色，如果沒有才用 'user'
             // const role = login.role || (login.data && login.data.role) || 'USER';
             // this.exampleService.setRole(role);
@@ -184,14 +183,14 @@ export class LoginComponent {
             // this.router.navigate(['/admin-main']);
             // 💡 儲存 Token (如果有回傳的話)
             if (login.token) {
-              localStorage.setItem('token', login.token);
+              sessionStorage.setItem('token', login.token);
             } else if (login.data && login.data.token) {
-              localStorage.setItem('token', login.data.token);
+              sessionStorage.setItem('token', login.data.token);
             }
 
             // 💡 優先使用後端回傳的角色，如果沒有才用 'user'
-            const role = login.role || (login.data && login.data.role) || 'USER';
-            this.exampleService.setRole(role);
+            // const role = login.role || (login.data && login.data.role) || 'USER';
+            this.exampleService.setUserData(login.data.token);
             this.showDialog(4);
             this.router.navigate(['/profile']);
           }

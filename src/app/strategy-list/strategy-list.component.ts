@@ -35,6 +35,7 @@ export class StrategyListComponent {
   // 追蹤正在編輯的卡片 (可以用 index 或 symbol)
   editingId: number | null = null;
   strategies:StrategySetting[]=[];
+  originalStrategyBackup!:StrategySetting|null;
   // strategies:StrategySetting[]=[{
   //   id: 1,
   //   symbol: '0050',
@@ -62,18 +63,25 @@ export class StrategyListComponent {
   // 進入編輯模式
   startEdit(index: number) {
     this.editingId = index;
+    //紀錄當前資料，以避免畫面被修改時，再按取消，不會復原。
+    this.originalStrategyBackup = JSON.parse(JSON.stringify(this.strategies[index]));
   }
 
   // 儲存
   saveEdit(index: number) {
     if (this.editingId === null) return;
     const updatedStrategy = this.strategies[this.editingId];
+    if(updatedStrategy.buyThreshold >= updatedStrategy.sellThreshold) {
+      alert("提醒：加碼門檻應小於減碼門檻。");
+      return;
+    }
     console.log(updatedStrategy);
     // 這裡執行 API 更新邏輯
     this.httpClientService.putApi(`http://localhost:8080/api/strategy-set/${updatedStrategy.id}`,updatedStrategy)
     .subscribe((res:any) => {
-      if(!res.data) {return;}
-      else{
+      if(!res.data) {
+        return;
+      }else{
         console.log("錯誤代碼:"+res.code + ", 錯誤訊息:"+res.message);
         this.editingId = null;
       }
@@ -84,7 +92,12 @@ export class StrategyListComponent {
   }
   // 取消
   cancelEdit() {
+    if (this.editingId !== null && this.originalStrategyBackup) {
+      // 還原原本的數值
+      this.strategies[this.editingId] = this.originalStrategyBackup;
+    }
     this.editingId = null;
+    this.originalStrategyBackup = null;
   }
 
   //觸發dialog
@@ -132,22 +145,24 @@ export class StrategyListComponent {
   loadData(){
     console.log("LoadData...");
     const user = this.exampleService.currentUser; // 💡 拿快照
-
+    console.log(this.exampleService.currentUser);
     // 情況 A：已經有登入資料了 (從其他頁面過來)
     if (user && user.id !== 0) {
       this.userId = user.id;
       this.role = user.role;
       this.userName = user.name;
       console.log("從快照獲取 UserId:", this.userId);
+      console.log(user);
       this.fetchStrategies(this.userId); // 💡 直接執行抓取
     }
-      // 情況 B：還沒拿到資料 (例如剛重新整理頁面)
-      else {
+    // 情況 B：還沒拿到資料 (例如剛重新整理頁面)
+    else {
       this.exampleService.user$.subscribe(user => {
         if (user && user.id !== 0) {
           this.role = user.role; // 當角色改變，這裡會自動觸發
           this.userId = user.id;
           this.userName = user.name;
+          console.log(user);
           console.log("Role:"+this.role +",UserId:"+this.userId+",userName:"+this.userName);
 
           this.fetchStrategies(this.userId);
@@ -179,11 +194,12 @@ export class StrategyListComponent {
       this.strategies.forEach(s=>{
         this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/quote/${s.symbol}`)
         .subscribe((res:any) => {
-          s.currentPrice=res.data?.currentPrice ?? 0;
-          s.currentBias= (res.data?.currentBias ?? 0 )*100;
+          s.currentPrice=res.data.currentPrice ?? 0;
+          s.currentBias= (res.data.bias ?? 0 )*100;
+          s.date="最新更新時間 : " + res.data.date;
+          console.log(res.data.bias);
         });
       });
-      console.log(this.strategies);
 
     });
   }

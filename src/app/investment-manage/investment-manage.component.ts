@@ -26,9 +26,9 @@ export class InvestmentManageComponent {
   }
 
   ngOnInit(): void {
-    this.exampleService.role$.subscribe(role => {
-      this.role = role; // 當角色改變，這裡會自動觸發
-    });
+    // this.exampleService.role$.subscribe(role => {
+    //   this.role = role; // 當角色改變，這裡會自動觸發
+    // });
     this.exampleService.user$.subscribe(user => {
       this.role = user.role; // 當角色改變，這裡會自動觸發
       this.userId = user.id;

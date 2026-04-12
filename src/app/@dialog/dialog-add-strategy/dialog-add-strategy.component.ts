@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
 import { StrategySetting } from '../../@interface/wealth-map';
 import { HttpClientService } from '../../@service/http-client.service';
 import { CommonModule } from '@angular/common';
+import { ExampleService } from '../../@service/example.service';
 
 @Component({
   selector: 'app-dialog-add-strategy',
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
 })
 export class DialogAddStrategyComponent {
   constructor(
+    private exampleService:ExampleService,
     private httpClientService:HttpClientService
   ){}
   // 讓這個dialogRef全域變數 等於你後面宣告的DialogComponent
@@ -26,7 +28,7 @@ export class DialogAddStrategyComponent {
   readonly dialogRef = inject(MatDialogRef<DialogAddStrategyComponent>);
   // 讓data全域變數用來接收你開啟dialog時傳遞進來的資料
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  userid:number=2;
+  userId!:number;
   newStrategy:StrategySetting={
     symbol: '',
     buyThreshold: 0,
@@ -38,14 +40,22 @@ export class DialogAddStrategyComponent {
   currentBias!:number;
   isLoading: boolean = false;
 
+  alertSymbol!:string;
+  alertBias!:string;
+
   ngOnInit(): void {
     console.log(this.data);
-    this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/user/available-stocks/${this.userid}`)
-    .subscribe((res:any) => {
-      if(!res) return;
-      this.userHolding = res;
-      console.log(this.userHolding);
+    this.exampleService.user$.subscribe(user => {
+      if (user && user.id !== 0) {
+        this.userId = user.id;
+        this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/user/available-stocks/${this.userId}`)
+        .subscribe((res:any) => {
+          if(!res) return;
+          this.userHolding = res;
+          console.log(this.userHolding);
 
+        });
+      }
     });
   }
 
@@ -84,19 +94,28 @@ export class DialogAddStrategyComponent {
 
   //新增問題
   confirm(){
-
+    this.alertSymbol="";
+    this.alertBias="";
     if(!this.newStrategy.symbol){
-      alert("請選擇欲設定加減碼門檻的項目。");
-      return;
+      this.alertSymbol="請選擇欲設定加減碼門檻的項目。";
 
-    }else if(!this.newStrategy.buyThreshold && !this.newStrategy.sellThreshold){
-      alert("請設定加減碼門檻，數字不能為空。");
+    }
+    if(!this.newStrategy.buyThreshold && !this.newStrategy.sellThreshold){
+      this.alertBias="請設定加減碼門檻，數字不能為空。";
+    }
+    if(this.newStrategy.buyThreshold >= this.newStrategy.sellThreshold){
+      this.alertBias+="加碼門檻應小於減碼門檻。";
+    }
+
+    if(this.alertSymbol || this.alertBias){
+      alert("請檢查欲設定加減碼門檻的項目及加減碼門檻。");
       return;
     }
 
+
     console.log(this.newStrategy);
     // 這裡執行 API 更新邏輯
-    this.httpClientService.postApi(`http://localhost:8080/api/strategy-set/user/${this.userid}`,this.newStrategy)
+    this.httpClientService.postApi(`http://localhost:8080/api/strategy-set/user/${this.userId}`,this.newStrategy)
     .subscribe((res:any) => {
       if (res.code === 200) {
         // 成功後才關閉，並把結果傳回給父元件

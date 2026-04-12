@@ -161,7 +161,7 @@ export class HeaderUserComponent {
     console.log('執行登出');
     this.isMenuOpen = false;
     // 之後要清空使用者資料
-    this.exampleService.setRole('visitor');
+    // this.exampleService.setRole('visitor');
     this.exampleService.clearUserData(); // 這會清除 localStorage 並廣播 null
     this.router.navigate(['/main']);
   }
@@ -222,7 +222,7 @@ export class HeaderUserComponent {
 
 
     //監聽網址參數(看使用者現在在看哪一則公告)
-    console.log(this.activatedRoute.snapshot.paramMap.get('pageId'));
+    // console.log(this.activatedRoute.snapshot.paramMap.get('pageId'));
     this.activatedRoute.params.subscribe(params => {
       const pageId = params['pageId']; // 確保這裡的名稱跟 AppRoutingModule 定義一致
 

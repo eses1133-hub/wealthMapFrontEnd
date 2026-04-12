@@ -126,14 +126,15 @@ export class RegisterComponent {
             console.log('註冊成功');
             this.emailErrorMsg = '';
             if (register.token) {
-              localStorage.setItem('token', register.token);
+              sessionStorage.setItem('token', register.token);
             } else if (register.data && register.data.token) {
-              localStorage.setItem('token', register.data.token);
+              sessionStorage.setItem('token', register.data.token);
             }
 
             // 💡 優先使用後端回傳的角色，如果沒有才用 'user'
-            const role = register.role || (register.data && register.data.role) || 'USER';
-            this.exampleService.setRole(role);
+            // const role = register.role || (register.data && register.data.role) || 'USER';
+            // this.exampleService.setRole(role);
+            this.exampleService.setUserData(register.data.token);
             this.showDialog(2);
           }
 

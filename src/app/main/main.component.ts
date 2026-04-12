@@ -80,7 +80,8 @@ export class MainComponent {
     // 之後要清空使用者資料
     // this.exampleService.setRole('visitor');
     // 💡 清空使用者資料並清除 localStorage
-    this.exampleService.clearRole();
+    // this.exampleService.clearRole();
+    this.exampleService.clearUserData();
   }
   // 個人通知格式
   personalList = [
