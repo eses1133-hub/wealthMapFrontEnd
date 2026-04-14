@@ -138,10 +138,10 @@ export class MainComponent {
     const notice = document.getElementById('notification');
     notice?.remove();
   }
-  health(){
+  health() {
     this.router.navigate(['/health']);
   }
-  strategy(){
+  strategy() {
     this.router.navigate(['/strategy']);
   }
 
@@ -152,6 +152,35 @@ export class MainComponent {
 
   initChart() {
     // 因為admin和user都需要圖表 但原本寫在ngAfterViewInit會因為還沒拿到身分跑不出來 所以移到ngOnInit()拿完身分後
+
+    //圓餅圖中間的字
+    const centerTextPlugin = {
+      id: 'centerText',
+      afterDraw: (chart: any) => {
+        const { ctx, chartArea: { left, right, top, bottom } } = chart;
+        ctx.save();
+
+        // 取得圓餅圖區域的中心點 (這會自動避開右側圖例空間)
+        const centerX = (left + right) / 2;
+        const centerY = (top + bottom) / 2;
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // 繪製「總資產」字樣
+        ctx.font = '14px sans-serif';
+        ctx.fillStyle = '#666';
+        ctx.fillText('總資產', centerX, centerY - 12); // 向上偏移一點
+
+        // 繪製金額數字
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = '#333333';
+        ctx.fillText('$100,000,000', centerX, centerY + 12); // 向下偏移一點
+
+        ctx.restore();
+      }
+    };
+
     // 獲取 canvas 元素
     let ctx = document.getElementById('chart') as HTMLCanvasElement;
 
@@ -178,6 +207,8 @@ export class MainComponent {
           ],
           //設定hover時的偏移量，滑鼠移上去表會偏移，方便觀看選種的項目
           hoverOffset: 4,
+          // 數字越小，中間框框越小，圓環越粗（例如 '30%'）
+      cutout: '70%',
         },
       ],
     };
@@ -186,6 +217,7 @@ export class MainComponent {
     let chart = new Chart(ctx, {
       type: 'doughnut',
       data: data,
+      plugins: [centerTextPlugin],
       options: {
         responsive: true,           // 讓圖表隨容器大小伸縮
         maintainAspectRatio: false,  // 設為 false，圖表才會完全聽從 CSS 設定的高度

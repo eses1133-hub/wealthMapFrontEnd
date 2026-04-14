@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddStrategyComponent } from '../@dialog/dialog-add-strategy/dialog-add-strategy.component';
 import { AUTO_STYLE } from '@angular/animations';
 
+
 @Component({
   selector: 'app-strategy-list',
   imports: [
@@ -30,6 +31,7 @@ export class StrategyListComponent {
   role!: string;
   userId!:number;
   userName!:string;
+
 
   showModal: boolean = true;
   // 追蹤正在編輯的卡片 (可以用 index 或 symbol)
@@ -55,14 +57,17 @@ export class StrategyListComponent {
   //   currentBias: -3
   // }];
 
+
   ngOnInit(): void {
     this.loadData();
   }
+
 
   // 進入編輯模式
   startEdit(index: number) {
     this.editingId = index;
   }
+
 
   // 儲存
   saveEdit(index: number) {
@@ -79,7 +84,9 @@ export class StrategyListComponent {
       }
       // this.strategies = [...res.data];
 
+
     });
+
 
   }
   // 取消
@@ -87,9 +94,12 @@ export class StrategyListComponent {
     this.editingId = null;
   }
 
+
   //觸發dialog
   readonly dialog = inject(MatDialog);
   addStrategy(userId:number){
+
+
 
 
     let newStrategy:StrategySetting={
@@ -113,10 +123,13 @@ export class StrategyListComponent {
         this.loadData();
       }
 
+
     })
   }
 
+
   onDelete(index: number){
+
 
     this.httpClientService.delApi(`http://localhost:8080/api/strategy-set/${this.strategies[index].id}`)
     .subscribe((res:any) => {
@@ -125,37 +138,45 @@ export class StrategyListComponent {
         this.strategies = this.strategies.filter(s => s.id !== this.strategies[index].id);
       }
 
+
     });
 
+
   }
+
 
   loadData(){
     console.log("LoadData...");
     const user = this.exampleService.currentUser; // 💡 拿快照
-
+    console.log(this.exampleService.currentUser);
     // 情況 A：已經有登入資料了 (從其他頁面過來)
     if (user && user.id !== 0) {
       this.userId = user.id;
       this.role = user.role;
       this.userName = user.name;
       console.log("從快照獲取 UserId:", this.userId);
+      console.log(user);
       this.fetchStrategies(this.userId); // 💡 直接執行抓取
     }
-      // 情況 B：還沒拿到資料 (例如剛重新整理頁面)
-      else {
+    // 情況 B：還沒拿到資料 (例如剛重新整理頁面)
+    else {
       this.exampleService.user$.subscribe(user => {
         if (user && user.id !== 0) {
           this.role = user.role; // 當角色改變，這裡會自動觸發
           this.userId = user.id;
           this.userName = user.name;
+          console.log(user);
           console.log("Role:"+this.role +",UserId:"+this.userId+",userName:"+this.userName);
+
 
           this.fetchStrategies(this.userId);
         }
       });
     }
 
+
   }
+
 
   fetchStrategies(userId:number){
     console.log(`http://localhost:8080/api/strategy-set/user/${userId}`);
@@ -175,6 +196,7 @@ export class StrategyListComponent {
         };
       });
 
+
       // 抓取現價
       this.strategies.forEach(s=>{
         this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/quote/${s.symbol}`)
@@ -185,6 +207,9 @@ export class StrategyListComponent {
       });
       console.log(this.strategies);
 
+
     });
   }
 }
+
+

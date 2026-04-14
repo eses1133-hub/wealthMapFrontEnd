@@ -22,21 +22,26 @@ import { AssetOverviewComponent } from './features/assets/pages/asset-overview/a
 import { HealthComponent } from './health/health.component';
 import { MonteComponent } from './monte/monte.component';
 import { GoalOverviewComponent } from './features/financial-goals/pages/goal-overview/goal-overview.component';
+import { SseDemoComponent } from './sse-demo/sse-demo.component';
 
 export const routes: Routes = [
 
-  //全開放
+  //全開放頁面
   { path: "main", component: MainComponent },
-  { path: "risk-cover", component: RiskCoverComponent },
-  { path: "risk-test", component: RiskTestComponent },
-  { path: "risk-result", component: RiskResultComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'notification', component: NotificationComponent },
-  { path: 'notification/:pageId', component: NotificationComponent },
   { path: "information", component: AdminInformationSetComponent },
   { path: "service", component: AdminServiceSetComponent },
   { path: "privacy", component: AdminPrivacySetComponent },
+  { path: 'sse-demo', component: SseDemoComponent },
+  //通知頁面
+  { path: 'system-notification', component: NotificationComponent },
+  { path: 'system-notification/:pageId', component: NotificationComponent },
+   // 風險評估系列
+  { path: 'risk-cover', component: RiskCoverComponent },
+  { path: 'risk-test', component: RiskTestComponent },
+  { path: 'risk-result', component: RiskResultComponent },
+
 
   //僅對ADMIN開放
   {
@@ -53,13 +58,13 @@ export const routes: Routes = [
   //對ADMIN、USER開放
   {
     path: 'personal-notification',
-    component: PersonalNotificationComponent,
+    component: NotificationComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'personal-notification/:pageId',
-    component: PersonalNotificationComponent,
+    component: NotificationComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
@@ -80,22 +85,32 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
-  // {
-  //   path: 'assets',
-  //   component: AssetOverviewComponent,
-  //   canActivate: [authGuard],
-  //   data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
-  // },
+  {
+    path: 'assets',
+    component: AssetOverviewComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
+  },
 
   {
     path: 'goals',
     component: GoalOverviewComponent,
-    //canActivate: [authGuard],
-    //data: { roles: ['ADMIN', 'USER'] }
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+   {
+    path: 'health',
+    component: HealthComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+   {
+    path: 'monte',
+    component: MonteComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
   },
 
-  { path: 'health', component: HealthComponent },
-  { path: 'monte', component: MonteComponent },
   // { path: 'forgot', component: ForgotComponent },
 
   // 萬用路由（必須放在陣列的最下方）
