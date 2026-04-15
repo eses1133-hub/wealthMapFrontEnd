@@ -33,7 +33,6 @@ export const routes: Routes = [
   { path: "information", component: AdminInformationSetComponent },
   { path: "service", component: AdminServiceSetComponent },
   { path: "privacy", component: AdminPrivacySetComponent },
-  { path: 'sse-demo', component: SseDemoComponent },
   //通知頁面
   { path: 'system-notification', component: NotificationComponent },
   { path: 'system-notification/:pageId', component: NotificationComponent },
