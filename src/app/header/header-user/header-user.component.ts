@@ -198,7 +198,7 @@ export class HeaderUserComponent {
     //   this.role = newRole;
     // });
 
-
+    console.log("Header User NgOnInt，強制載入");
     // 新增抓取個人資訊 by Carly
     this.exampleService.user$.subscribe(user=>{
       if(user && user.role !== 'visitor'){
@@ -211,6 +211,7 @@ export class HeaderUserComponent {
         this.fetchPersonalNotifications(); // 刷個人列表
 
       }else{
+        console.log("偵測到身分為 visitor，強制跳轉");
         // 登出（變回 visitor），關閉 SSE
         this.disconnectSse();
         console.log("SSE斷線");
@@ -272,11 +273,16 @@ export class HeaderUserComponent {
   }
 
   connectSse(userId: string){
+    // 💡 檢查：如果已經連線，且 userId 沒變，就直接 return，不要斷開
+    if (this.isConnected() && this.userId.toString() === userId) {
+      return;
+    }
 
     this.disconnectSse(); // 確保不會重複連線
 
     this.sseSubscription = this.sseService.getServerSentEvent(userId).subscribe({
       next: (data) => {
+        this.isConnected.set(true); // 💡 連線成功設定為 true
         console.log('收到即時通知:', data);
         // 💡 收到訊息後，直接刷新紅點數字
         this.refreshUnreadCount();

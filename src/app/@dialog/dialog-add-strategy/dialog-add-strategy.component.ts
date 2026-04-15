@@ -118,6 +118,7 @@ export class DialogAddStrategyComponent {
     this.httpClientService.postApi(`http://localhost:8080/api/strategy-set/user/${this.userId}`,this.newStrategy)
     .subscribe((res:any) => {
       if (res.code === 200) {
+        this.exampleService.reloadUserContext();
         // 成功後才關閉，並把結果傳回給父元件
         this.dialogRef.close(res.data);
       } else {
