@@ -14,7 +14,7 @@
     <button
       [class.active]="currentTab() === 'engine'"
       (click)="switchTab('engine')">
-      投資策略引擎
+      投資成長模擬
     </button>
   </div>
 
@@ -27,7 +27,8 @@
       @case ('strategy') {
         <app-strategy-list></app-strategy-list> }
       @case ('engine') {
-        <div class="placeholder">投資策略引擎開發中...</div>
+        <!-- <div class="placeholder">投資策略引擎開發中...</div> -->
+         <app-monte></app-monte>
       }
     }
   </div>

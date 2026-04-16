@@ -1,10 +1,11 @@
 import { Component,signal } from '@angular/core';
 import { StrategyListComponent } from '../strategy-list/strategy-list.component';
 import { ExampleService } from '../@service/example.service';
+import { MonteComponent } from '../monte/monte.component';
 
 @Component({
   selector: 'app-investment-manage',
-  imports: [StrategyListComponent],
+  imports: [StrategyListComponent,MonteComponent],
   templateUrl: './investment-manage.component.html',
   styleUrl: './investment-manage.component.scss'
 })

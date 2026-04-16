@@ -1,6 +1,6 @@
 <div class="monte-container">
   <!-- 1. 頂部標題 -->
-  <h1 class="main-title">投資計劃</h1>
+  <!-- <h1 class="main-title">投資計劃模擬</h1> -->
 
   <!-- 2. 下方左右分欄外殼 -->
   <div class="main-layout">
@@ -55,7 +55,7 @@
         <div class="asset-grid">
           <div *ngFor="let asset of currentScenario.assets" class="input-allocation">
             <label>{{asset.type}}：</label><input type="number" [(ngModel)]="asset.percentage"
-            placeholder="input-placeholder" class="small-input">
+            placeholder="請輸入投資配置(%)" class="small-input">
           </div>
         </div>
         <!-- 只有加起來等於 100 才能點按鈕 -->
@@ -77,7 +77,14 @@
       <div class="chart-container-white">
         <div echarts [options]="historyLineOption" class="actual-chart"></div>
       </div>
-      <!-- <div class="market-detail">投資市場<br>(細節)</div> -->
+      <div class="market-detail">本系統採用 蒙地卡羅(Monte Carlo)模擬演算法，透過隨機市場路徑抽樣，整合資產報酬率、波動率（標準差）與通膨因子，模擬未來可能的資產成長曲線。
+      <ul>
+        <li>  較佳預期：取 90th 百分位數(較佳的 10% 情境)</li>
+        <li>  一般表現：取 50th 百分位數(中位數)</li>
+        <li>  較差預期：取 10th 百分位數(較差的 10% 情境)</li>
+      </ul>
+        <p>※ 本模擬僅供參考，不構成投資建議，實際投資結果仍受市場波動影響。</p>
+      </div>
     </div>
 
   </div>
