@@ -49,23 +49,12 @@ export class HeaderUserComponent {
   isConnected = signal(false);
   messages = signal<SseMessage[]>([]);
 
-    // 點擊系統公告列表的時候，觸發已讀和換網址
+  // 點擊系統公告列表的時候，觸發已讀和換網址
   detail(pageId: number) {
     // 1. 呼叫已讀 API (POST)
     this.httpClientService.postApi(`http://localhost:8080/api/notifications/read?userId=${this.userId}&notificationId=${pageId}`, {})
       .subscribe(() => {
-        // 標記成功後，刷新紅點數字
-        this.refreshUnreadCount();
-
-        // 重新抓取列表，這樣 notificationList 裡的 hasRead 就會變成 true
-        this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=${this.userId}`)
-          .subscribe((res: any) => {
-            this.notificationList = res;
-            // 💡 C. 列表更新完後，再跳轉
-            this.router.navigate(['/system-notification', pageId]);
-        });
-        // this.router.navigate(['/notification', pageId]);
-
+        this.router.navigate(['/system-notification', pageId]);
       });
   }
 
@@ -74,13 +63,6 @@ export class HeaderUserComponent {
     // 1. 呼叫個人訊息已讀 API (假設路徑如下)
     this.httpClientService.patchApi(`http://localhost:8080/api/notifications/${logId}/read`, {})
     .subscribe(() => {
-      // 2. 刷新紅點 (這時候 personalCount 會減少)
-      this.refreshUnreadCount();
-
-      // 3. 重新抓取個人列表 (讓畫面上的未讀點消失)
-      this.fetchPersonalNotifications();
-
-      // 4. 跳轉到個人訊息詳情頁 (或彈出視窗)
       this.router.navigate(['/personal-notification', logId]);
     });
   }
@@ -130,6 +112,19 @@ export class HeaderUserComponent {
       });
   }
 
+   //取得當前使用者的公告列表(含以讀未讀狀態)
+  fetchSystemNotifications() {
+    this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=${this.userId}`)
+    .subscribe((notificationList: any) => {
+      console.log('使用者的公告列表',notificationList);
+      this.notificationList = notificationList;
+      // for test
+      // this.notificationList.data.forEach((item)=>{
+      //   console.log(item.id+":"+item.hasRead);
+      // });
+    });
+  }
+
   // 新增抓取個人訊息的方法 by Carly
   fetchPersonalNotifications() {
     // 記得加上你提到的 channel=WEB_PUSH 篩選 (假設後端有提供此過濾)
@@ -137,6 +132,10 @@ export class HeaderUserComponent {
       .subscribe((res: any) => {
         if (res && res.code === 200) {
           this.personalNotificationList = res.data;
+          // for test
+          // this.personalNotificationList.forEach((item)=>{
+          //   console.log(item.id+":"+item.read);
+          // });
         }
       });
   }
@@ -193,10 +192,6 @@ export class HeaderUserComponent {
   role: string = "visitor";
 
   ngOnInit() {
-    // // 💡 關鍵：訂閱 Service，確保登入或重新整理後身分正確
-    // this.exampleService.role$.subscribe(newRole => {
-    //   this.role = newRole;
-    // });
 
     console.log("Header User NgOnInt");
     // 新增抓取個人資訊 by Carly
@@ -209,6 +204,7 @@ export class HeaderUserComponent {
         this.connectSse(user.id.toString());
         this.refreshUnreadCount(); // 只有非訪客才去該使用者的未讀數
         this.fetchPersonalNotifications(); // 刷個人列表
+        this.fetchSystemNotifications(); // 刷系統公告列表
 
       }else if (!user || user.role === 'visitor'){
         console.log("偵測到身分為 visitor，強制跳轉");
@@ -218,38 +214,20 @@ export class HeaderUserComponent {
       }
     });
 
-    // //初始化時獲取未讀數
-    // this.refreshUnreadCount();
-
-
-    //監聽網址參數(看使用者現在在看哪一則公告)
-    // console.log(this.activatedRoute.snapshot.paramMap.get('pageId'));
-    this.activatedRoute.params.subscribe(params => {
-      const pageId = params['pageId']; // 確保這裡的名稱跟 AppRoutingModule 定義一致
-
-      //只要換頁（或點擊列表進入詳情），就收起通知框
-      this.isNotificationOpen = false;
-
-        //取得當前使用者的公告列表(含以讀未讀狀態)
-      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list-with-status?userId=${this.userId}`)
-      .subscribe((notificationList: any) => {
-        console.log('使用者的公告列表',notificationList);
-        this.notificationList = notificationList;
-      });
 
       //page=1 -> 公告列表 http://localhost:4200/admin-notification-set
       //page=2 -> 公告詳情 http://localhost:4200/admin-notification-set/pageId (後面會接pageId)
-      if (pageId) {
-        // this.page = 2;
-        this.fetchNotificationDetail(pageId);
-        // 進入詳情頁也刷一次紅點總數
-        this.refreshUnreadCount();
-      } else {
-        this.page = 1;
-        this.notificationIdDetail = null;
-      }
-    });
+      // if (pageId) {
+      //   // this.page = 2;
+      //   this.fetchNotificationDetail(pageId);
 
+      //   // 進入詳情頁也刷一次紅點總數
+      //   this.refreshUnreadCount();
+      // } else {
+      //   this.page = 1;
+      //   this.notificationIdDetail = null;
+      // }
+    // });
 
     // 監聽路由事件，只要導航結束就關閉所有面板
     this.router.events.pipe(
@@ -258,6 +236,33 @@ export class HeaderUserComponent {
       this.isNotificationOpen = false;
       this.isMenuOpen = false;
       console.log('路由已切換，自動收起面板');
+
+      // 1. 取得當前網址
+      const currentUrl = this.router.url;
+
+      // 2. 判斷是否為「通知類」的詳細頁面
+      // 邏輯：網址包含 'notification' 且 最後一段是數字 (代表 pageId)
+      const isNotificationPath = currentUrl.includes('personal-notification') ||
+                                currentUrl.includes('system-notification');
+
+      const urlParts = currentUrl.split('/');
+      const lastPart = urlParts[urlParts.length - 1];
+      const isDetailView = !isNaN(Number(lastPart)); // 檢查最後一段是不是 ID
+      console.log("urlParts:"+urlParts+",lastPart:"+lastPart+",isDetailView:"+isDetailView);
+      if (isNotificationPath && isDetailView) {
+        // 💡 稍微延遲一點點，確保資料庫已經寫入完成
+        setTimeout(() => {
+          console.log('符合過濾條件：進入通知詳細頁，刷新紅點。');
+          // this.refreshUnreadCount();
+          console.log("重新載入panel紅點");
+          this.fetchPersonalNotifications();
+          this.fetchSystemNotifications();
+        }, 300);
+      }
+      else{
+        this.fetchPersonalNotifications();
+        this.fetchSystemNotifications();
+      }
     });
 
     // 初始化今天日期（你原本的補零邏輯可以保留，或參考之前的簡化版）
@@ -288,6 +293,7 @@ export class HeaderUserComponent {
         this.refreshUnreadCount();
         // 如果是個人訊息，也可以順便刷新個人列表
         this.fetchPersonalNotifications();
+        this.fetchSystemNotifications();
         // const newMessage: SseMessage = {
         //   id: Date.now(),
         //   content: data,
