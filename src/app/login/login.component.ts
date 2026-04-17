@@ -36,7 +36,9 @@ export class LoginComponent {
     private httpClientService: HttpClientService,
     private exampleService: ExampleService) {
   }
-
+  goHome(){
+    this.router.navigate(['/main']);
+  }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -116,7 +118,7 @@ export class LoginComponent {
           }
           else {
             console.log('登入失敗', login.code);
-
+            this.showDialog(7);
           }
 
         })
@@ -208,6 +210,7 @@ export class LoginComponent {
           }
           else {
             console.log('登入失敗', relogin.code);
+            this.showDialog(7);
           }
         })
     }
