@@ -41,6 +41,8 @@ export class DialogAddStrategyComponent {
   currentBias!:number;
   isLoading: boolean = false;
 
+  alertSymbol!:string;
+  alertBias!:string;
 
   ngOnInit(): void {
     console.log(this.data);
@@ -104,15 +106,21 @@ export class DialogAddStrategyComponent {
 
   //新增問題
   confirm(){
-
+    this.alertSymbol="";
+    this.alertBias="";
 
     if(!this.newStrategy.symbol){
-      alert("請選擇欲設定加減碼門檻的項目。");
-      return;
+      this.alertSymbol="請選擇欲設定加減碼門檻的項目。";
+    }
+    if(!this.newStrategy.buyThreshold && !this.newStrategy.sellThreshold){
+      this.alertBias+="請設定加減碼門檻，數字不能為空。";
+    }
+    if(this.newStrategy.buyThreshold >= this.newStrategy.sellThreshold){
+      this.alertBias+="加碼門檻應小於減碼門檻。";
+    }
 
-
-    }else if(!this.newStrategy.buyThreshold && !this.newStrategy.sellThreshold){
-      alert("請設定加減碼門檻，數字不能為空。");
+    if(this.alertSymbol || this.alertBias){
+      alert("請檢查欲設定加減碼門檻的項目及加減碼門檻。");
       return;
     }
 
@@ -122,6 +130,7 @@ export class DialogAddStrategyComponent {
     this.httpClientService.postApi(`http://localhost:8080/api/strategy-set/user/${this.userId}`,this.newStrategy)
     .subscribe((res:any) => {
       if (res.code === 200) {
+        this.exampleService.reloadUserContext();
         // 成功後才關閉，並把結果傳回給父元件
         this.dialogRef.close(res.data);
       } else {

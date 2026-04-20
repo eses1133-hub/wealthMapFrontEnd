@@ -1,3 +1,4 @@
+import { RiskGuard } from './guards/risk.guard';
 import { Routes } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { AdminMainComponent } from './admin-main/admin-main.component';
@@ -28,6 +29,8 @@ export const routes: Routes = [
 
   //全開放頁面
   { path: "main", component: MainComponent },
+  { path: "risk-test", component: RiskTestComponent },
+  { path: "risk-result", component: RiskResultComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: "information", component: AdminInformationSetComponent },
@@ -81,13 +84,27 @@ export const routes: Routes = [
     data: { roles: ['ADMIN', 'USER'] }
   },
   // 投資管理
-  // { path: 'investment-manage',
-  //   component: InvestmentManageComponent,
-  //   canActivate: [authGuard],
-  //   data: { roles: ['ADMIN', 'USER'] }
-  // },
-  { path: 'strategy-list',
+  {
+    path: 'investment-manage',
+    component: InvestmentManageComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+  {
+    path: 'strategy-list',
     component: StrategyListComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+  {
+    path: 'monte',
+    component: MonteComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
+  },
+  {
+    path: 'health',
+    component: HealthComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
@@ -97,24 +114,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
   },
-  // {
-  //   path: 'goals',
-  //   component: GoalOverviewComponent,
-  //   canActivate: [authGuard],
-  //   data: { roles: ['ADMIN', 'USER'] }
-  // },
-  //  {
-  //   path: 'health',
-  //   component: HealthComponent,
-  //   canActivate: [authGuard],
-  //   data: { roles: ['ADMIN', 'USER'] }
-  // },
-   {
-    path: 'monte',
-    component: MonteComponent,
-    canActivate: [authGuard],
-    data: { roles: ['ADMIN', 'USER'] }
+
+  {
+    path: 'risk-cover',
+    component: RiskCoverComponent,
+    canActivate: [RiskGuard]
   },
+
 
   // { path: 'forgot', component: ForgotComponent },
 

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule, CurrencyPipe } from '@angular/common'; // 💡 引入常用模組與金錢格式
-import { FormsModule } from '@angular/forms'; // 💡 引入表單模組
-import { ExampleService } from '../../../../@service/example.service';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+// 💡 1. 引入我們剛剛建好的 GoalService 和介面 (請確認路徑是否正確)
+import { GoalService, FinancialGoal } from '../../services/goal.service';
 
 @Component({
   selector: 'app-goal-overview',
   standalone: true,
-  imports: [CommonModule, FormsModule], // 💡 記得把它們加進來
+  imports: [CommonModule, FormsModule],
   templateUrl: './goal-overview.component.html',
   styleUrl: './goal-overview.component.scss',
   providers: [CurrencyPipe]
@@ -16,37 +17,39 @@ export class GoalOverviewComponent implements OnInit {
 
   role!: string;
 
-  // 💡 為了開發方便，我們先強制登入！
   isLoggedIn: boolean = true;
-
-  // 控制表單顯示的開關
   showAddForm: boolean = false;
 
-  // 綁定表單輸入框的變數
   newGoalName: string = '';
   newGoalAmount: number | null = null;
   newGoalDate: string = '';
 
-  // 💡 暫時用一筆假資料墊檔，確認畫面有成功出來
-  goals: any[] = [
-    { id: 1, name: '日本東京之旅', targetAmount: 50000, targetDate: '2024-12-31' }
-  ];
+  // 💡 2. 把原本的假資料清掉，宣告一個空的陣列來接後端資料
+  goals: FinancialGoal[] = [];
 
-  constructor(
-    private router: Router,
-    private exampleService: ExampleService
-  ) { }
-
-  goRegister() {
-    this.router.navigate(['/register']);
-  }
+  // 💡 3. 在建構子注入 GoalService 發球機
+  constructor(private router: Router, private goalService: GoalService) { }
 
   ngOnInit(): void {
-    this.exampleService.user$.subscribe(user => {
-      this.role = user.role; // 當角色改變，這裡會自動觸發
-      // this.userId = user.id;
-      // this.userName = user.name;
+    // 💡 4. 畫面一載入，就去跟後端要資料
+    this.refreshData();
+  }
+
+  // 🌟 新增一個專門用來重新整理資料的方法
+  refreshData(): void {
+    const userId = 1; // 暫時寫死 1 號使用者
+    this.goalService.getGoals(userId).subscribe({
+      next: (data) => {
+        this.goals = data; // 把後端傳來的資料塞給畫面
+      },
+      error: (err) => {
+        console.error('取得財務目標失敗', err);
+      }
     });
+  }
+
+  goRegister(): void {
+    this.router.navigate(['/register']);
   }
 
   backToHome(): void {
@@ -61,18 +64,51 @@ export class GoalOverviewComponent implements OnInit {
     this.showAddForm = !this.showAddForm;
   }
 
+  // 🌟 5. 正式接上「新增」API
   saveGoal(): void {
     if (!this.newGoalName || !this.newGoalAmount || !this.newGoalDate) {
       alert('請填寫完整目標資訊！');
       return;
     }
-    alert('前端介面已就緒！等一下接上後端 API 就會把資料送出！');
-    this.toggleAddForm(); // 關閉表單
+
+    const payload: FinancialGoal = {
+      goalName: this.newGoalName,
+      targetAmount: this.newGoalAmount,
+      currentAmount: 0, // 新目標的目前進度預設為 0
+      targetDate: this.newGoalDate
+    };
+
+    const userId = 1; // 暫時寫死 1 號使用者
+    this.goalService.addGoal(userId, payload).subscribe({
+      next: () => {
+        // 新增成功後：關閉表單、清空輸入框、重新整理列表
+        this.showAddForm = false;
+        this.newGoalName = '';
+        this.newGoalAmount = null;
+        this.newGoalDate = '';
+        this.refreshData();
+      },
+      error: (err) => {
+        console.error('新增目標失敗', err);
+        alert('新增失敗，請檢查後端連線！');
+      }
+    });
   }
 
-  deleteGoal(id: number, name: string): void {
+  deleteGoal(id: number | undefined, name: string): void {
+    if (!id) return; // 防呆，確保有 ID
+
     if (confirm(`確定要放棄「${name}」這個目標嗎？`)) {
-      alert('前端介面已就緒！等一下接上 API 就會執行刪除！');
+      this.goalService.deleteGoal(id).subscribe({
+        next: () => {
+          // 刪除成功後，重新整理列表
+          this.refreshData();
+        },
+        error: (err) => {
+          console.error('刪除失敗', err);
+          alert('刪除失敗，請檢查後端連線！');
+        }
+      });
     }
   }
 }

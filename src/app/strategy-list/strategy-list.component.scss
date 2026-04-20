@@ -3,7 +3,6 @@
   justify-content: center;
 }
 
-
 .info-banner {
   width: 75%; /* 建議跟你的 hr 寬度一致 */
   margin: 0 auto 30px auto;
@@ -14,13 +13,11 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-
 .info-header {
   color: #2c3e50;
   margin-bottom: 8px;
   font-size: 16px;
 }
-
 
 .info-content {
   color: #5d6d7e;
@@ -28,17 +25,14 @@
   line-height: 1.6;
 }
 
-
 .info-content ul {
   margin: 0;
   padding-left: 20px;
 }
 
-
 .info-content li {
   margin-bottom: 5px;
 }
-
 
 /* 程式碼樣式微調 */
 code {
@@ -47,7 +41,6 @@ code {
   border-radius: 3px;
   font-family: monospace;
 }
-
 
 /* 容器佈局 */
 .container-grid {
@@ -153,7 +146,6 @@ code {
 
 }
 
-
 // 乖離率tooltip設定
 .info-tooltip {
   display: inline-block;
@@ -171,12 +163,10 @@ code {
   margin-left: 4px;
 }
 
-
 .info-tooltip:hover {
   color: beige;
   border:1.5px solid beige;
 }
-
 
 /* 當偏差值小於 -2 時觸發的樣式 */
 .bias-alert.danger {

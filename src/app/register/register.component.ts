@@ -128,6 +128,7 @@ export class RegisterComponent {
           else {
             console.log('註冊成功');
             this.emailErrorMsg = '';
+
             // 2. 註冊成功後，再登入 API
             const loginData = {
               email: this.email,
@@ -139,7 +140,7 @@ export class RegisterComponent {
                 if (login.code == 200) {
                   // 3. 執行你 LoginComponent 裡那套完整的登入邏輯
                   const token = login.token || (login.data && login.data.token);
-                  localStorage.setItem('token', token);
+                  sessionStorage.setItem('token', token);
                   this.exampleService.setUserData(token);
 
                   // if (register.token) {
@@ -149,8 +150,8 @@ export class RegisterComponent {
                   // }
 
                   // 💡 優先使用後端回傳的角色，如果沒有才用 'user'
-                  const role = register.role || (register.data && register.data.role) || 'USER';
-                  this.exampleService.setRole(role);
+                  // const role = register.role || (register.data && register.data.role) || 'USER';
+                  // this.exampleService.setRole(role);
                   this.showDialog(2);
                 }
               })

@@ -1,11 +1,14 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, FormGroup,Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { ExampleService } from '../@service/example.service';
+import { HttpClientService } from '../@service/http-client.service';
 
 interface InvestmentAsset {
   type: string;
@@ -50,6 +53,7 @@ export class MonteComponent implements OnInit, AfterViewInit {
   historyLineOption: echarts.EChartsOption = {};
   private chartInstance: echarts.ECharts | undefined;
 
+
   userId = 1;
   apiUrl = `http://localhost:8080/api/monte/simulate/${this.userId}`;
   apiResult: MonteResponse | null = null;
@@ -76,9 +80,17 @@ export class MonteComponent implements OnInit, AfterViewInit {
   totalAllocation: number = 100;
   allocationTotalError: boolean = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private router: Router,
+    private exampleService:ExampleService,
+    private httpClientService:HttpClientService
+  ) {
     Chart.register(...registerables);
   }
+
 
   ngOnInit(): void {
     this.currentScenario.assets.sort((a, b) => b.percentage - a.percentage);
@@ -92,6 +104,7 @@ export class MonteComponent implements OnInit, AfterViewInit {
   onChartInit(ec: any) {
     this.chartInstance = ec;
   }
+
 
   updateChartWithInputs(assetType: string) {
     this.totalAllocation = this.currentScenario.assets.reduce((sum, asset) => sum + asset.percentage, 0);
