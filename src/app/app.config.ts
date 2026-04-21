@@ -12,6 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideHttpClient(), // 注入攔截器
-    provideEchartsCore({ echarts })
+    //provideEchartsCore({ echarts })
   ]
 };
