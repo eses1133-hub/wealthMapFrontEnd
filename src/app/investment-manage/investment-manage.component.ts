@@ -1,22 +1,17 @@
 import { Component, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // 💡 為了讓 HTML 能用 *ngIf 切換
 import { StrategyListComponent } from '../strategy-list/strategy-list.component';
 import { ExampleService } from '../@service/example.service';
-// 💡 這是妳要多加的新成員
+import { MonteComponent } from '../monte/monte.component';
+import { Router } from '@angular/router';
 import { Rebalance } from '../rebalance/rebalance';
 
 @Component({
   selector: 'app-investment-manage',
-  standalone: true,
-  imports: [
-    CommonModule,          // 💡 多加這一個 (工具包)
-    StrategyListComponent, // 原本的
-    Rebalance  // 💡 多加這一個 (新元件)
-  ],
+  imports: [ StrategyListComponent,MonteComponent,Rebalance],
   templateUrl: './investment-manage.component.html',
   styleUrl: './investment-manage.component.scss'
 })
-export class InvestmentManageComponent implements OnInit {
+export class InvestmentManageComponent{
   constructor(
     private exampleService: ExampleService
   ) {}
