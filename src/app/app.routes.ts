@@ -40,7 +40,7 @@ export const routes: Routes = [
   //通知頁面
   { path: 'system-notification', component: NotificationComponent },
   { path: 'system-notification/:pageId', component: NotificationComponent },
-   // 風險評估系列
+  // 風險評估系列
   { path: 'risk-cover', component: RiskCoverComponent },
   { path: 'risk-test', component: RiskTestComponent },
   { path: 'risk-result', component: RiskResultComponent },
