@@ -1,22 +1,23 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { StrategyListComponent } from '../strategy-list/strategy-list.component';
-import { ExampleService } from '../@service/example.service';
 import { MonteComponent } from '../monte/monte.component';
+import { ExampleService } from '../@service/example.service';
 import { Router } from '@angular/router';
+import { Rebalance } from '../rebalance/rebalance';
 
 @Component({
   selector: 'app-investment-manage',
-  imports: [StrategyListComponent,MonteComponent],
+  imports: [ StrategyListComponent,MonteComponent,Rebalance],
   templateUrl: './investment-manage.component.html',
   styleUrl: './investment-manage.component.scss'
 })
-export class InvestmentManageComponent {
+export class InvestmentManageComponent{
   constructor(
     private router: Router,
     private exampleService: ExampleService
   ) { }
   // 定義目前的頁籤狀態，預設為 'rebalance'
-  currentTab = signal<'rebalance' | 'strategy' | 'engine'>('rebalance');
+  currentTab = signal<'rebalance' | 'strategy' | 'engine'>('strategy');
 
   // 三種身分 visitor;user;admin
   role!: string;
@@ -38,9 +39,11 @@ export class InvestmentManageComponent {
     //   this.role = role; // 當角色改變，這裡會自動觸發
     // });
     this.exampleService.user$.subscribe(user => {
-      this.role = user.role; // 當角色改變，這裡會自動觸發
-      this.userId = user.id;
-      this.userName = user.name;
+      if (user && user.id !== 0) {
+        this.role = user.role;
+        this.userId = user.id;
+        this.userName = user.name;
+      }
     });
   }
 }

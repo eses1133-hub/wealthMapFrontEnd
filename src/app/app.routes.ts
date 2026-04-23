@@ -124,7 +124,8 @@ export const routes: Routes = [
   {
     path: 'portfolio-recommendation',
     component: PortfolioRecommendationComponent,
-    canActivate: [RiskGuard]
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN', 'USER'] }
   },
 
 
