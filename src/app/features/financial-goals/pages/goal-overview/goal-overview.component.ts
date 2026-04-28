@@ -40,10 +40,13 @@ export class GoalOverviewComponent implements OnInit {
       this.role = user.role; // 當角色改變，這裡會自動觸發
       // this.userId = user.id;
       // this.userName = user.name;
+
+      if (this.role === 'USER' || this.role === 'ADMIN') {
+        // 只有當確定是「登入狀態」時，才去跟後端要資料
+        this.refreshData();
+        this.loadTotalAssets();
+      }
     });
-    // 💡 4. 畫面一載入，就去跟後端要資料
-    this.refreshData();
-    this.loadTotalAssets();
   }
 
   // 🌟 新增一個專門用來重新整理資料的方法
