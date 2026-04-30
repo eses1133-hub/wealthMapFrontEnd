@@ -11,6 +11,7 @@ import { AssetDTO, AssetAllocationDto } from '../../models/asset.model';
 import { Liability } from '../../../../@interface/liability';
 import { LiabilityService } from '../../../../@service/liability.service';
 import { HealthEventService } from '../../../../services/health-event.service';
+import { ExampleService } from '../../../../@service/example.service';
 
 
 
@@ -36,6 +37,7 @@ export class AssetOverviewComponent implements OnInit {
   newAssetAmount: number | null = null;
   unitPrice: number | null = null;
   unitCount: number | null = null;
+  userId: number | null = null;
 
   // --- 🌟 負債變數 (新加入) ---
   userLiabilities: Liability[] = [];
@@ -55,28 +57,40 @@ export class AssetOverviewComponent implements OnInit {
     @Inject(LiabilityService) private liabilityService: LiabilityService, // 💡 注入負債服務
     private currencyPipe: CurrencyPipe,
     private router: Router,
-    private healthEventService: HealthEventService // ⭐新增
+    private healthEventService: HealthEventService,
+    private exampleService: ExampleService
   ) { }
 
   ngOnInit(): void {
-    this.refreshData();
-    // ⭐ 通知 health 更新
-this.healthEventService.triggerRefresh();
+    this.exampleService.user$.subscribe(user => {
+
+      if (!user || !user.id) {
+        console.log('user 尚未載入完成');
+        return;
+      }
+      this.userId = user.id;
+
+      this.refreshData();
+
+      this.healthEventService.triggerRefresh();
+    });
   }
 
   // -------------------------------------------------------------
   // 核心邏輯：從後端重新讀取資產與負債資料
   // -------------------------------------------------------------
   refreshData(): void {
-    const userId = 1; // 暫時寫死 1 號使用者
-
+    if (!this.userId) {
+      console.log('userId 尚未取得');
+      return;
+    }
     // 1. 抓取真實資產清單
-    this.assetService.getUserAssets(userId).subscribe({
+    this.assetService.getUserAssets(this.userId!).subscribe({
       next: (assets) => {
         this.userAssets = assets;
 
         // 抓取圓餅圖分配資料
-        this.assetService.getAssetAllocation(userId).subscribe(data => {
+        this.assetService.getAssetAllocation(this.userId!).subscribe(data => {
           this.allocationData = data;
           this.totalAssetValue = data.reduce((sum, item) => sum + item.totalAmount, 0);
           this.calculateNetWorth(); // 🌟 重算淨資產
@@ -87,7 +101,7 @@ this.healthEventService.triggerRefresh();
     });
 
     // 2. 抓取真實負債清單 (新加入)
-    this.liabilityService.getLiabilitiesByUserId(userId).subscribe({
+    this.liabilityService.getLiabilitiesByUserId(this.userId).subscribe({
       next: (liabilities: Liability[]) => {
         this.userLiabilities = liabilities;
         this.totalLiabilities = liabilities.reduce((sum, item) => sum + item.amount, 0);
@@ -213,6 +227,10 @@ this.healthEventService.triggerRefresh();
       alert('請填寫完整資訊');
       return;
     }
+    if (!this.userId) {
+      alert('使用者尚未登入');
+      return;
+    }
     const payload = {
       name: this.newAssetName,
       type: this.newAssetType,
@@ -220,20 +238,20 @@ this.healthEventService.triggerRefresh();
     };
 
 
-this.assetService.addAsset(1, payload).subscribe({
-  next: () => {
-    this.showAddAssetForm = false;
-    this.newAssetName = '';
-    this.newAssetAmount = null;
+    this.assetService.addAsset(this.userId, payload).subscribe({
+      next: () => {
+        this.showAddAssetForm = false;
+        this.newAssetName = '';
+        this.newAssetAmount = null;
 
-    this.refreshData();
+        this.refreshData();
 
-    // ⭐⭐ 關鍵
-    this.healthEventService.triggerRefresh();
-  },
-  error: () => alert('新增失敗')
-});
-}
+        // ⭐⭐ 關鍵
+        this.healthEventService.triggerRefresh();
+      },
+      error: () => alert('新增失敗')
+    });
+  }
 
   deleteAsset(assetId: number, assetName: string): void {
     if (confirm(`確定刪除「${assetName}」嗎？`)) {
@@ -257,24 +275,29 @@ this.assetService.addAsset(1, payload).subscribe({
       alert('請填寫完整資訊');
       return;
     }
+
+    if (!this.userId) {
+      alert('使用者尚未登入');
+      return;
+    }
     const payload: Liability = {
       name: this.newLiabilityName,
       category: this.newLiabilityCategory,
       amount: this.newLiabilityAmount
     };
 
-   this.liabilityService.addLiability(1, payload).subscribe({
-  next: () => {
-    this.showAddLiabilityForm = false;
-    this.newLiabilityName = '';
-    this.newLiabilityAmount = null;
+    this.liabilityService.addLiability(this.userId, payload).subscribe({
+      next: () => {
+        this.showAddLiabilityForm = false;
+        this.newLiabilityName = '';
+        this.newLiabilityAmount = null;
 
-    this.refreshData();
+        this.refreshData();
 
-    // ⭐⭐ 一樣要加
-    this.healthEventService.triggerRefresh();
-  }
-});
+        // ⭐⭐ 一樣要加
+        this.healthEventService.triggerRefresh();
+      }
+    });
   }
 
   //-----------------------------------------------------------------------------------------
