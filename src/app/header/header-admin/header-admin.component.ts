@@ -36,7 +36,7 @@ export class HeaderAdminComponent {
     // this.exampleService.setRole('visitor');
     this.exampleService.clearUserData();
     this.router.navigate(['/main']);
-    //因為登出後需要重整首頁才會跳至訪客頁面 所以新增這個畫面重整
+    //登出後清空F12的重整
     window.location.reload();
   }
 

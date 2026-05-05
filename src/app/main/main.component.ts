@@ -184,9 +184,15 @@ export class MainComponent {
   }
 
   private initMainChart(allocationData: any[]): void {
-    // 注意：這裡的 id 是 'chart'，對應你原本 HTML 裡的 canvas
-    const ctx = document.getElementById('doughnutChart') as HTMLCanvasElement;
-    if (!ctx) return;
+    //解決舊的圖表還佔著畫布導致錯誤的問題
+    const canvasId = 'doughnutChart';
+  const ctx = document.getElementById(canvasId) as HTMLCanvasElement;
+  if (!ctx) return;
+
+  // 2. 🌟 關鍵修正：直接從 Chart.js 的全域管理池中找出 ID '4' (或任何 ID) 的圖表並摧毀
+  // 這行能解決「Canvas is already in use」的報錯
+  Chart.getChart(canvasId)?.destroy();
+
 
     // 強制排序：現金 -> 股票 -> 基金 -> 債券
     const sortOrder = ['CASH', 'STOCK', 'FUND', 'BOND'];
@@ -294,11 +300,18 @@ export class MainComponent {
   }
 
   assetChangeChart(assetHistory: any[]) {
-    const ctx2 = document.getElementById('assetChangeChart') as HTMLCanvasElement;
+    //解決舊的圖表還佔著畫布導致錯誤的問題
+    const canvasId = 'assetChangeChart'; // 確保這跟你的 HTML id 一致
+  const ctx2 = document.getElementById(canvasId) as HTMLCanvasElement;
 
-    if (this.myLineChart) {
-      this.myLineChart.destroy();
-    }
+  if (!ctx2) return;
+
+  // 🌟 關鍵修正：直接從 Chart.js 的全域清單中找出這個畫布上的圖表並銷毀
+  const existingChart = Chart.getChart(canvasId);
+  if (existingChart) {
+    existingChart.destroy();
+  }
+
 
     const labels = assetHistory.map(item => item.recordDate.slice(5));
     const dataValues = assetHistory.map(item => item.totalAmount);
@@ -462,7 +475,25 @@ refreshChart(data: any[]) {
     this.activatedRoute.params.subscribe(params => {
       const pageId = params['pageId']; // 確保這裡的名稱跟 AppRoutingModule 定義一致
 
-      this.exampleService.user$.subscribe(user => {
+      //取得公告列表
+      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list`)
+        .subscribe((notificationList: any) => {
+          // console.log(notificationList);
+          this.notificationList = notificationList;
+        })
+
+      //page=1 -> 公告列表 http://localhost:4200/admin-notification-set
+      //page=2 -> 公告詳情 http://localhost:4200/admin-notification-set/pageId (後面會接pageId)
+      if (pageId) {
+        // this.page = 2;
+        this.fetchNotificationDetail(pageId);
+      } else {
+        this.page = 1;
+        this.notificationIdDetail = null;
+      }
+    });
+
+    this.exampleService.user$.subscribe(user => {
         if (user && user.id && user.id !== 0) {
           this.role = user.role;
           this.userId = user.id;
@@ -496,26 +527,12 @@ refreshChart(data: any[]) {
                   });
               });
           }
-        }
-      });
-
-      //取得公告列表
-      this.httpClientService.getApi(`http://localhost:8080/api/notifications/list`)
-        .subscribe((notificationList: any) => {
-          // console.log(notificationList);
-          this.notificationList = notificationList;
-        })
-
-      //page=1 -> 公告列表 http://localhost:4200/admin-notification-set
-      //page=2 -> 公告詳情 http://localhost:4200/admin-notification-set/pageId (後面會接pageId)
-      if (pageId) {
-        // this.page = 2;
-        this.fetchNotificationDetail(pageId);
-      } else {
-        this.page = 1;
-        this.notificationIdDetail = null;
+        }else {
+      // 登出時的基礎清理 (雖然你會重整，但這裡寫著比較保險)
+      this.role = 'visitor';
+      this.hasAnyHistory = false;
       }
-    });
+      });
 
     // 每 5 秒自動切換下一則新聞
     setInterval(() => {
@@ -549,4 +566,3 @@ refreshChart(data: any[]) {
     }
   }
 }
-
