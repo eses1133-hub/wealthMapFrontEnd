@@ -25,11 +25,11 @@ export class MainComponent {
   private myLineChart: Chart | undefined;
   private myDoughnutChart: Chart | undefined;
   // 三種身分 visitor;user;admin
-  // role!:string ;
   role = 'visitor';
   page = 1;
-  // role!: string;
   userId!: number;
+  currentIndex = 0; // 目前顯示的新聞索引
+
 
   realTotalAssets: number = 0;
   hasAnyHistory: boolean = false;
@@ -90,38 +90,17 @@ export class MainComponent {
   logout() {
     console.log('執行登出');
     this.isMenuOpen = false;
-    // 之後要清空使用者資料
-    // this.exampleService.setRole('visitor');
-    // 💡 清空使用者資料並清除 localStorage
-    // this.exampleService.clearRole();
     this.exampleService.clearUserData();
   }
-  // 個人通知格式
-  personalList = [
-    { tag: '繳款提醒', title: '您的房屋貸款即將於 3 日後扣款，請確認帳戶餘額。', date: '2026-03-22' },
-    { tag: '定期定額', title: '本月美股 ETF 投資已扣款成功，點擊查看成交明細。', date: '2026-03-18' },
-    { tag: '目標到期', title: '您的「緊急預備金存滿計劃」今日到期，請檢視資產配置。您的「緊急預備金存滿計劃」今日到期，請檢視資產配置。您的「緊急預備金存滿計劃」今日到期，請檢視資產配置。您的「緊急預備金存滿計劃」今日到期，請檢視資產配置。', date: '2026-03-19' }
-  ];
-
-  //系統通知格式
-  // systemList = [
-  //   { tag: '功能', title: '【新功能】全台首創「資產再平衡」建議系統正式上線！', date: '2026-03-19' },
-  //   { tag: '維護', title: '【預告】本週六凌晨 02:00 系統維護，屆時暫停服務本週六凌晨 02:00 系統維護，屆時暫停服務本週六凌晨 02:00 系統維護，屆時暫停服務', date: '2026-03-18' },
-  //   { tag: '公告', title: '【提醒】保障資產安全，建議每三個月定期更換登入密碼', date: '2026-03-15' },
-  //   { tag: '教學', title: '【攻略】如何設定您的第一個「財務目標」？三分鐘上手教學', date: '2026-03-12' }
+  // 個人通知格式&左右切換按鈕
+  // personalList = [
+  //   { tag: '繳款提醒', title: '您的房屋貸款即將於 3 日後扣款，請確認帳戶餘額。', date: '2026-03-22' },
   // ];
+  // nextPersonal() {this.currentIndex = (this.currentIndex + 1) % this.personalList.length;}
+  // prevPersonal() {this.currentIndex = (this.currentIndex - 1 + this.personalList.length) % this.personalList.length;}
+  // 每 5 秒自動切換下一則訊息
+  // setInterval(() => {this.nextPersonal();}, 8000);
 
-  currentIndex = 0; // 目前顯示的新聞索引
-
-
-
-  nextPersonal() {
-    this.currentIndex = (this.currentIndex + 1) % this.personalList.length;
-  }
-
-  prevPersonal() {
-    this.currentIndex = (this.currentIndex - 1 + this.personalList.length) % this.personalList.length;
-  }
   login() {
     this.router.navigate(['/login']);
   }
@@ -482,8 +461,6 @@ refreshChart(data: any[]) {
           this.notificationList = notificationList;
         })
 
-      //page=1 -> 公告列表 http://localhost:4200/admin-notification-set
-      //page=2 -> 公告詳情 http://localhost:4200/admin-notification-set/pageId (後面會接pageId)
       if (pageId) {
         // this.page = 2;
         this.fetchNotificationDetail(pageId);
@@ -498,7 +475,7 @@ refreshChart(data: any[]) {
           this.role = user.role;
           this.userId = user.id;
 
-          // 🌟 當身分正確時，統籌呼叫所有圖表數據
+          // 當身分正確時，統籌呼叫所有圖表數據
           if (this.role === 'USER' || this.role === 'ADMIN') {
             //同步使用者總資產(用於折線圖)
             this.httpClientService.postApi(`http://localhost:8080/api/asset-history/sync/${this.userId}`)
@@ -528,16 +505,11 @@ refreshChart(data: any[]) {
               });
           }
         }else {
-      // 登出時的基礎清理 (雖然你會重整，但這裡寫著比較保險)
+      // 登出時的基礎清理 (雖然有重整頁面，但在寫一次比較保險)
       this.role = 'visitor';
       this.hasAnyHistory = false;
       }
       });
-
-    // 每 5 秒自動切換下一則新聞
-    setInterval(() => {
-      this.nextPersonal();
-    }, 8000);
 
 
     // 取得前台新聞列表
