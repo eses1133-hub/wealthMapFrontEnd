@@ -205,9 +205,10 @@ export class HealthComponent implements OnInit {
     this.healthService.getHealth(userId).subscribe({
       next: (res) => {
 
-        const data = res.data; // AppResponse 包裝
+        const data = res;
 
-        this.analysisList = data.advice ?? [];
+        this.healthData = data;
+
         console.log('health data 👉', data);
 
         // ✅ 空狀態控制（核心🔥）
@@ -219,6 +220,8 @@ export class HealthComponent implements OnInit {
         const S = data.S ?? 0;
         const G = data.G ?? 0;
         const score = data.score ?? 0;
+
+        this.analysisList = data.advice ?? [];
 
         // 🔥 更新畫面
         this.metrics = {
