@@ -34,7 +34,7 @@ export class Rebalance implements OnInit {
   ngOnInit(): void {
     // 訂閱使用者資訊，取得 userId
     this.exampleService.user$.subscribe(user => {
-      if (user && user.id !== 0) {
+      if (user && user.id && user.id !== 0) {
         this.userId = user.id;
         this.loadPortfolioFromDb();
       }
@@ -45,7 +45,8 @@ export class Rebalance implements OnInit {
    * 從資料庫載入已儲存的資產配置
    */
   loadPortfolioFromDb() {
-    this.httpClientService.get(`api/rebalance/list/${this.userId}`).subscribe((res: any) => {
+    console.log(this.userId);
+    this.httpClientService.getApi(`http://localhost:8080/api/rebalance/list/${this.userId}`).subscribe((res: any) => {
       if (res && Array.isArray(res)) {
         this.portfolio = res.map((item: any) => ({
           id: item.id,
@@ -81,8 +82,9 @@ export class Rebalance implements OnInit {
           targetPercentage: result.targetPercentage,
           currentShares: result.sharesOwned // 將前端變數轉換為後端欄位名
         };
+        console.log(payload);
 
-        this.httpClientService.post('api/rebalance/save', payload).subscribe({
+        this.httpClientService.postApi('http://localhost:8080/api/rebalance/save', payload).subscribe({
           next: (savedItem: any) => {
             // 存檔成功後，將資料壓入畫面陣列
             this.portfolio.push({
@@ -145,7 +147,7 @@ export class Rebalance implements OnInit {
     const item = this.portfolio[index];
     if (confirm(`確定要移除 ${item.stockId} 嗎？`)) {
       if (item.id) {
-        this.httpClientService.delete(`api/rebalance/delete/${item.id}`).subscribe(() => {
+        this.httpClientService.delApi(`http://localhost:8080/api/rebalance/delete/${item.id}`).subscribe(() => {
           this.portfolio.splice(index, 1);
         });
       } else {
