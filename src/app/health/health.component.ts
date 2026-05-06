@@ -14,10 +14,16 @@ interface HealthMetric {
   value: string;
   isAlert: boolean;
   status: string;
+  tip: string;
 }
 interface MetricsMap {
   [key: string]: HealthMetric;
+  liquidity: HealthMetric;
+  debt: HealthMetric;
+  savings: HealthMetric;
+  investment: HealthMetric;
 }
+
 
 
 @Component({
@@ -25,7 +31,7 @@ interface MetricsMap {
   imports: [
     CommonModule,
     NgxEchartsDirective,
-
+    MatTooltipModule
   ],
   providers: [
     provideEchartsCore({ echarts })
@@ -51,22 +57,15 @@ export class HealthComponent implements OnInit {
 
   // 計算結果
   metrics: MetricsMap = {
-    liquidity: { label: '', value: '', isAlert: false, status: '' },
-    debt: { label: '', value: '', isAlert: false, status: '' },
-    savings: { label: '', value: '', isAlert: false, status: '' },
-    investment: { label: '', value: '', isAlert: false, status: '' },
+    liquidity: { label: '', value: '', isAlert: false, status: '', tip: '' },
+    debt: { label: '', value: '', isAlert: false, status: '', tip: '' },
+    savings: { label: '', value: '', isAlert: false, status: '', tip: '' },
+    investment: { label: '', value: '', isAlert: false, status: '', tip: '' },
   };
 
   gaugeOption: EChartsOption = {};
   radarOption: EChartsOption = {};
 
-
-  // 假設這是你的詳細數據
-  historyData = [
-    { date: '2026-01', L: 6, DTI: 50, S: 70, G: 65, score: 50 }, // 1月
-    { date: '2026-02', L: 7.5, DTI: 60, S: 80, G: 70, score: 65 }, // 2月
-    { date: '2026-03', L: 8.5, DTI: 70, S: 90, G: 80, score: 80 }  // 3月 (目前)
-  ];
 
   historyLineOption: any = {};
   healthData: any = null;
@@ -81,7 +80,10 @@ export class HealthComponent implements OnInit {
 
 
       if (!user || !user.id) {
-        console.log('user 尚未載入完成');
+        console.log('訪客模式');
+
+        this.role = 'visitor';   // ⭐⭐ 這行是關鍵
+
         return;
       }
       this.role = user.role;
@@ -92,6 +94,30 @@ export class HealthComponent implements OnInit {
       }
     });
   }
+
+  radarChartOption = {
+    radar: {
+      indicator: [
+        { name: '日常收支', max: 100 },
+        { name: '風險抵抗', max: 100 },
+        { name: '財務規劃', max: 100 },
+        { name: '財務信心', max: 100 },
+        { name: '心理滿足', max: 100 }
+      ]
+    },
+    series: [
+      {
+        type: 'radar',
+        data: [
+          {
+            value: [80, 75, 60, 65, 70],
+            areaStyle: { opacity: 0.3 }
+          }
+        ]
+      }
+    ]
+  };
+
 
   initGauge(score: number) {
     this.gaugeOption = {
@@ -114,7 +140,7 @@ export class HealthComponent implements OnInit {
         axisLine: {
           lineStyle: {
             width: 15,
-            color: [[0.3, '#ff4d4f'], [0.7, '#ffec3d'], [1, '#73d13d']]
+            color: [[0.3, '#ef3c2d'], [0.7, '#9dcee2'], [1, '#4091c9']]
           }
         },
         axisTick: { show: false },
@@ -166,65 +192,6 @@ export class HealthComponent implements OnInit {
   }
 
 
-
-  initHistoryLine(data: any[]) {
-    if (!data || data.length === 0) return;
-    this.historyData = data;
-
-    this.historyLineOption = {
-      //提示框
-      tooltip: { trigger: 'axis' },
-      //圖
-      legend: {
-        data: ['流動性', '負債比', '儲蓄率', '投資勝率']
-      },
-      grid: {
-        left: '3%',
-        right: '8%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: this.historyData.map(item => item.date),
-        boundaryGap: false
-      },
-      yAxis: {
-        type: 'value',
-        name: '總分',
-      },
-      //數據列
-      series: [{
-        name: '財務總分',
-        type: 'line',
-        data: this.historyData.map(item => item.score),
-        smooth: true,
-        symbolSize: 10,
-        triggerLineEvent: true,
-        lineStyle: {
-          width: 4,
-          color: '#5470c6'
-        },
-        areaStyle: {
-          opacity: 0.2
-        }
-      }],
-    };
-    const last = this.historyData[this.historyData.length - 1];
-    if (last) {
-      this.initRadar(last.L, last.DTI, last.S, last.G);
-    }
-  }
-
-  onChartClick(params: any) {
-    const index = params.dataIndex;
-    const item = this.historyData[index];
-
-    if (item) {
-      this.initRadar(item.L, item.DTI, item.S, item.G, item.date);
-    }
-  }
-
   fetchHealthData(userId: number) {
 
     if (!userId) {
@@ -258,25 +225,29 @@ export class HealthComponent implements OnInit {
             label: '緊急預備金',
             value: L.toFixed(1) + ' 個月',
             isAlert: L < 6,
-            status: ''
+            status: '',
+            tip: '建議至少6個月生活費'
           },
           debt: {
             label: '負債比',
             value: DTI.toFixed(1) + '%',
             isAlert: DTI > 30,
-            status: ''
+            status: '',
+            tip: '負債比 = 總負債 / 收入 × 100%，建議低於30%'
           },
           savings: {
             label: '儲蓄率',
             value: S.toFixed(1) + '%',
             isAlert: S < 20,
-            status: ''
+            status: '',
+            tip: '建議至少20%以上'
           },
           investment: {
             label: '理財成就率',
             value: G + '%',
             isAlert: G < 80,
-            status: ''
+            status: '',
+            tip: '衡量投資達標程度'
           }
         };
 
