@@ -36,9 +36,9 @@
         </div>
       </div>
       <div class="register-wrapper">
-      <div class="frameCss" style="margin-top: 20px;">
-        <button class="registerbtn" (click)="goRegister()">註冊，開始使用「 WealthMap 個人資產與財務配置平台! 」</button>
-      </div>
+        <div class="frameCss" style="margin-top: 20px;">
+          <button class="registerbtn" (click)="goRegister()">註冊，開始使用「 WealthMap 個人資產與財務配置平台! 」</button>
+        </div>
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@
     <div class="left-panel">
       <div class="type-card">
 
-        <div class="type-subtitle">你的財務健康類型是...</div>
+        <div class="type-subtitle">您的財務健康分數為</div>
 
         <div class="gauge-box">
           <div echarts [options]="gaugeOption" class="chart"></div>
@@ -119,22 +119,23 @@
           你目前的財務狀況顯示：
 
           <ul>
-            <li *ngIf="metrics.liquidity.isAlert">
-              緊急預備金不足，建議至少6個月
-            </li>
-
-            <li *ngIf="metrics.debt.isAlert">
-              負債比偏高，需注意還款壓力
-            </li>
-
-            <li *ngIf="metrics.savings.isAlert">
-              儲蓄率偏低，建議提高存錢比例
-            </li>
-
-            <li *ngIf="metrics.investment.isAlert">
-              投資成效有待加強
+            <li *ngFor="let item of analysisList">
+              {{ item }}
             </li>
           </ul>
+
+          <!-- <li *ngIf="metrics.debt.isAlert">
+            負債比偏高，需注意還款壓力
+          </li>
+
+          <li *ngIf="metrics.savings.isAlert">
+            儲蓄率偏低，建議提高存錢比例
+          </li>
+
+          <li *ngIf="metrics.investment.isAlert">
+            投資成效有待加強
+          </li>
+          </ul> -->
 
         </div>
         }

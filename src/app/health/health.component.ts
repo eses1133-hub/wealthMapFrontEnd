@@ -69,6 +69,7 @@ export class HealthComponent implements OnInit {
 
   historyLineOption: any = {};
   healthData: any = null;
+  analysisList: string[] = [];
 
   isLoading: boolean = false;
   hasAsset: boolean = false;
@@ -82,7 +83,7 @@ export class HealthComponent implements OnInit {
       if (!user || !user.id) {
         console.log('訪客模式');
 
-        this.role = 'visitor';   // ⭐⭐ 這行是關鍵
+        this.role = 'visitor';
 
         return;
       }
@@ -206,7 +207,7 @@ export class HealthComponent implements OnInit {
 
         const data = res.data; // AppResponse 包裝
 
-
+        this.analysisList = data.advice ?? [];
         console.log('health data 👉', data);
 
         // ✅ 空狀態控制（核心🔥）
