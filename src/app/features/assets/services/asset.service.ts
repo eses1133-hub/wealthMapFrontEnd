@@ -31,10 +31,13 @@ export class AssetService {
             map(backendAssets => {
                 return backendAssets.map(item => ({
                     id: item.id,
-                    name: item.name,                  // 🌟 修正：改用 name
-                    type: item.type as AssetType,     // 🌟 修正：改用 type
-                    currentValue: item.amount,
-                    totalCost: item.amount,           // 🌟 修正：把原本的 cost 改成 totalCost
+                    name: item.name,
+                    type: item.type as AssetType,
+                    amount: item.amount,
+                    currentValue: item.totalCost ?? item.amount,
+                    totalCost: item.totalCost ?? item.amount,
+                    stockId: item.stockId,
+                    sharesOwned: item.sharesOwned,
                     returnPercentage: 0,
                 }));
             })
@@ -105,7 +108,7 @@ export class AssetService {
     searchStock(symbol: string): Observable<any> {
 
         if (this.stockCache.has(symbol)) {
-            console.log(`[快取命中] ⚡ 直接從前端記憶體拿出 ${symbol} 的名字！不用打 API！`);
+
 
             return of({
                 code: 200,

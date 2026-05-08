@@ -73,7 +73,7 @@ export class AssetOverviewComponent implements OnInit {
   // 核心邏輯：從後端重新讀取資產與負債資料
   // -------------------------------------------------------------
   refreshData(): void {
-    const userId = 1; // 暫時寫死 1 號使用者
+    const userId = this.currentUserId;
 
     // 1. 抓取真實資產清單
     this.assetService.getUserAssets(userId).subscribe({
@@ -315,19 +315,18 @@ export class AssetOverviewComponent implements OnInit {
     }
   }
 
-  editAsset(asset: any) {
-    this.editingAssetId = asset.id; // 記下 ID，進入編輯模式
+  editAsset(asset: any): void {
+    this.editingAssetId = asset.id;
     this.showAddAssetForm = true;
 
-    // 完美對應你的變數清單
     this.newAssetName = asset.name;
-    this.newAssetSymbol = asset.symbol;
     this.newAssetType = asset.type;
-    this.unitPrice = asset.amount;   // 假設 amount 存的是單價
-    this.unitCount = asset.shares;   // 股數
-    this.newAssetAmount = asset.totalCost; // 總金額 (或是你看你 DTO 怎麼傳的)
-
-    // 如果你有寫計算總金額的方法，記得在這裡呼叫
+    this.newAssetSymbol = asset.stockId ?? '';
+    this.unitCount = asset.sharesOwned ?? null;
+    this.unitPrice = asset.sharesOwned && asset.totalCost
+      ? asset.totalCost / asset.sharesOwned
+      : asset.amount ?? null;
+    this.newAssetAmount = asset.totalCost ?? asset.amount ?? null;
   }
 
   cancelEdit() {
