@@ -258,11 +258,16 @@ export class AssetOverviewComponent implements OnInit {
       if (!this.newAssetName || !this.newAssetAmount || !this.newAssetSymbol) {
         alert('請填寫完整資訊');
         return;
-      }else if(this.userAssets.filter(s=>s.stockId === this.newAssetSymbol)){
-        confirm(this.newAssetName + '已設置過，確定要再新增該項目嗎?');
+      } else if(this.userAssets.filter(s=>s.stockId === this.newAssetSymbol)){
+        const isConfirmed = confirm(`${this.newAssetName} 已設置過，確定要再新增該項目嗎?`);
+
+        if (!isConfirmed) {
+          // 使用者點擊「取消」，直接中斷執行
+          return;
+        }
       }
     } else {
-      // 1. 基礎檢查 (保留你的優良傳統)
+      // 1. 基礎檢查
       if (!this.newAssetName || !this.newAssetAmount) {
         alert('請填寫完整資訊');
         return;
@@ -358,6 +363,7 @@ export class AssetOverviewComponent implements OnInit {
   cancelEdit() {
     this.editingAssetId = null;
     this.showAddAssetForm = false;
+    this.showAddCashflowForm = false;
     this.resetAssetForm();
   }
 
@@ -529,7 +535,7 @@ export class AssetOverviewComponent implements OnInit {
     // 完美對應你的變數清單
     this.newAssetName = asset.name;
     this.newAssetType = asset.type;
-    this.newAssetAmount = asset.amount; // 總金額 (或是你看你 DTO 怎麼傳的)
+    this.newAssetAmount = asset.currentValue; // 總金額
   }
 
   cancelCashFlow(): void {

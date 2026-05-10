@@ -29,6 +29,7 @@ export class MainComponent {
   page = 1;
   userId!: number;
   currentIndex = 0; // 目前顯示的新聞索引
+  riskLevel!:string;
 
 
   realTotalAssets: number = 0;
@@ -112,7 +113,12 @@ export class MainComponent {
   }
 
   goToRiskTest() {
-    this.router.navigate(['/risk-cover']);
+    if(this.role!=='visitor' && this.riskLevel){
+      this.router.navigate(['/risk-result']);
+    }else{
+      this.router.navigate(['/risk-cover']);
+    }
+
   }
 
   goToAssets() {
@@ -484,6 +490,7 @@ refreshChart(data: any[]) {
         if (user && user.id && user.id !== 0) {
           this.role = user.role;
           this.userId = user.id;
+          this.riskLevel = user.riskLevel;
 
           // 當身分正確時，統籌呼叫所有圖表數據
           if (this.role === 'USER' || this.role === 'ADMIN') {
