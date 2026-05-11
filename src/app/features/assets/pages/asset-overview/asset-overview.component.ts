@@ -77,7 +77,7 @@ export class AssetOverviewComponent implements OnInit {
   // 核心邏輯：從後端重新讀取資產與負債資料
   // -------------------------------------------------------------
   refreshData(): void {
-    const userId = this.currentUserId;
+    // const userId = 1; // 暫時寫死 1 號使用者
 
     // 1. 抓取真實資產清單
     this.assetService.getUserAssets(this.currentUserId).subscribe({
