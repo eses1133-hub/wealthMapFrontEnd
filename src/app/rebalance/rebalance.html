@@ -12,7 +12,7 @@
       </li>
       <li>
         <strong>操作建議 :</strong>
-        <span style="color: #c53030; font-weight: bold;">紅底</span> 表示偏離比例較大建議調整；
+        <span style="color: #c53030; font-weight: bold;"> 紅底</span> 表示偏離比例較大建議調整；
         <span style="color: #2f855a; font-weight: bold;">綠底</span> 表示持股符合預期。
       </li>
     </ul>
@@ -63,10 +63,10 @@
   </div>
 </div>
 
-<div class="calculation-footer" style="margin-top: 50px; text-align: center;">
+<div class="calculation-footer" style=" text-align: center;">
   <div style="display: inline-block; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
     <label>預計投入總金額 : </label>
     <input type="number" [(ngModel)]="targetTotalValue" style="width: 150px; height: 30px; margin: 0 10px;">
-    <button (click)="calculateRebalance()" style="background-color: #48bb78; color: white; width: 150px; height: 35px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold;">執行再平衡試算</button>
+    <button (click)="calculateRebalance()" class="rebalance-btn">執行再平衡試算</button>
   </div>
 </div>

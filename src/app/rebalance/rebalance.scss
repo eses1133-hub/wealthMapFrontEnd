@@ -330,19 +330,26 @@ input:checked + .slider {
   cursor: pointer;
 }
 
-button{
-  background-color: #9dcee2;
+.rebalance-btn{
+  background-color: #4091c9;
   color: #ffffff;
-  width: 80px;
-  height: 30px;
-  border: none;
+  width: 180px;
+  height: 35px;
+  border:none;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
+ font-weight: bold;
+ letter-spacing: 2px;
+//  padding: 5px 10px;
+
+ @media (max-width: 600px) {
+         margin-top: 20px;
+
+      }
 }
 
-button:hover{
-  background-color: #f29479;
+.rebalance-btn:hover{
+  background-color: #1368aa;
   color: white;
 }
-
