@@ -17,11 +17,21 @@
 </div>
 
 <hr>
-<br>
 
 <div class="frameCss" style="margin: 20px;">
   <div class="user-list-box">
     @if (userList && userList.length > 0) {
+      <div class="header-list-item">
+      <span class="header-item-id-tag">ID</span>
+      <span class="header-item-name">姓名</span>
+      <span class="header-item-tag">身分</span>
+      <span class="header-item-email">信箱</span>
+      <div class="sw-container">
+      <span class="header-sw-label">帳號狀態</span>
+
+
+      </div>
+      </div>
     @for(user of pagedUserLogs ; track $index){
     <div class="list-item" [class.row-hidden]="!user.enabled">
 

@@ -51,7 +51,7 @@ hr {
   // position: relative;
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 10px 15px;
   border-bottom: 1px solid #b6e4f6;
   margin-bottom: 10px;
   border-radius: 15px;
@@ -71,14 +71,15 @@ hr {
 .item-id-tag, .item-id-tag-disabled {
   border-radius: 10px;
   padding: 3px 10px;
-  margin-right: 15px;
-  font-size: 14px;
-  color: white;
+  // margin-right: 15px;
+  font-size: 16px;
+  // color: white;
   display: inline-block;
   // min-width: 60px;
   text-align: center;
+  width: 50px;
 }
-.item-id-tag { background-color: #4091c9; }
+// .item-id-tag { background-color: #4091c9; }
 .item-id-tag-disabled { background-color: #ccc; }
 
 /* 文字與標籤樣式 */
@@ -92,20 +93,82 @@ hr {
   // min-width: 60px;
   text-align: center;
 }
-.item-tag { background-color: #4091c9; }
+.item-tag { background-color: #9DCEE2; }
 .item-tag-disabled { background-color: #ccc; }
 
 .item-name, .item-name-disabled {
-  font-weight: 600;
-  width: 150px;
+  // font-weight: 600;
+  width: 250px;
+  text-align: center;
 }
 .item-name-disabled { color: #858585; }
 
 .item-email, .item-email-disabled {
   flex: 1;
   color: #666;
+  text-align: center;
+
 }
 .item-email-disabled { color: #ccc; }
+
+.header-list-item{
+ // position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #b6e4f6;
+  margin-bottom: 10px;
+  // border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.header-item-id-tag{
+   border-radius: 10px;
+  padding: 3px 10px;
+  // margin-right: 15px;
+  font-size: 16px;
+  // color: white;
+  display: inline-block;
+  // min-width: 60px;
+  text-align: center;
+  // background-color: #4091c9;
+  font-weight: 600;
+  width: 50px;
+}
+
+.header-item-name{
+  width: 250px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.header-item-tag{
+border-radius: 5px;
+  padding: 3px 10px;
+  // margin-right: 15px;
+  // font-size: 14px;
+  // color: white;
+  display: inline-block;
+  // min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.header-item-email{
+  flex: 1;
+  // color: #666;
+  text-align: center;
+  font-weight: 600;
+}
+
+.header-sw-label{
+  // font-size: 13px;
+  // font-weight: 600;
+  // color: #4091c9;
+  min-width: 106px;
+  text-align: center;
+  font-weight: 600;
+}
 
 /* 💡 新增：管理員專屬橘色樣式 */
 .admin-tag {
@@ -227,7 +290,14 @@ input:checked + .slider:before { transform: translateX(22px); }
   .admin-title { font-size: 24px; margin-left: 10px; margin-top: 60px; }
   .quantity-info, .pagination-select, .sw-label { display: none; }
   .list-box { width: 95%; }
-  .item-name { width: 80px; font-size: 14px; }
-  .item-email { display: none; } /* 手機版隱藏 Email 以防重疊 */
+  .item-name { width: 100px; font-size: 14px; }
+  .item-email,.header-item-email  { display: none; } /* 手機版隱藏 Email 以防重疊 */
   .sw-container { right: 5px; }
+  .item-id-tag, .item-id-tag-disabled{width: 15px; font-size: 12px;}
+  .header-item-id-tag{width: 40px;margin-left: 20px;}
+  .header-item-name { width: 180px;margin-left: 30px; }
+  .header-item-tag{width: 180px;margin-left: 20px;}
+  .item-tag{margin-right: 25px;}
+  .header-sw-label{min-width: 100px;}
+  .header-list-item{padding: 10px 2px;}
 }

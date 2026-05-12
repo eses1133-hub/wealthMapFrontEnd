@@ -306,31 +306,50 @@
       gap: 10px;
     }
 
-    /* 漂亮的新增按鈕樣式 */
-    .add-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      background-color: #4091c9;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
-      transition: all 0.3s ease;
+    // /* 漂亮的新增按鈕樣式 */
+    // .add-btn {
+    //   display: inline-flex;
+    //   align-items: center;
+    //   gap: 8px;
+    //   padding: 10px 24px;
+    //   background-color: #4091c9;
+    //   color: white;
+    //   border: none;
+    //   border-radius: 8px;
+    //   font-size: 16px;
+    //   font-weight: 600;
+    //   cursor: pointer;
+    //   box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
+    //   transition: all 0.3s ease;
 
+    //   &:hover {
+    //     background-color: #2c7ab0;
+    //     transform: translateY(-2px);
+    //     box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
+    //   }
+
+    //   &:active {
+    //     transform: translateY(1px);
+    //     box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
+    //   }
+    // }
+
+    .add-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+      color: white;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
+      background-color: #4091c9;
+
+      /* 藍色 */
       &:hover {
         background-color: #2c7ab0;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
-      }
-
-      &:active {
-        transform: translateY(1px);
-        box-shadow: 0 4px 10px rgba(64, 145, 201, 0.3);
       }
     }
   }
