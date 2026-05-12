@@ -57,12 +57,11 @@
       <div class="top-score-card">
 
         <!-- 右上角 Tip -->
-        <div class="health-tip" [matTooltip]="healthTipText" matTooltipPosition="below">
-
+        <div class="health-tip" [ngClass]="healthLevelClass" [matTooltip]="healthTipText" matTooltipPosition="below">
           {{ healthLevel }}
-
         </div>
-        <div class="score-title">
+
+        <div class="analysis-header3">
           您的財務健康分數為
         </div>
 
@@ -72,16 +71,12 @@
 
       </div>
 
-      <!-- 右：結果分析 -->
-      <div class="analysis-card">
+      <!-- 右：結果分析+ 財務指標-->
 
-        <div class="analysis-header">
-          結果分析
-        </div>
-
+      <div class="right-section">
         @if(!hasAsset && !hasLiability){
 
-        <div class="analysis">
+        <div class="analysis-section">
           尚未建立資產或負債，請先新增資料
         </div>
 
@@ -89,120 +84,197 @@
 
         @else {
 
-        <div class="analysis">
+        <div class="analysis-section">
 
-          <ul>
-            <li *ngFor="let item of analysisList">
-              {{ item }}
-            </li>
-          </ul>
+          <div class="analysis-header2">
+            結果分析
+          </div>
+
+          <div class="analysis">
+
+            <ul>
+              <li *ngFor="let item of analysisList">
+                {{ item }}
+              </li>
+            </ul>
+
+          </div>
+
+        </div>
+
+        <!-- 財務健康指標區塊 -->
+        <div class="metrics-section">
+
+          <div class="analysis-header">
+            財務健康指標
+          </div>
+          <div class="mini-metrics">
+            <!--  只顯示三個 -->
+            <div class="metrics-row">
+
+              <!-- 負債比 -->
+              <div class="metric-card" [class.alert]="metrics.debt.isAlert">
+
+                <!-- <div class="info-btn" [matTooltip]="metrics.debt.tip" matTooltipPosition="above">
+                  ?
+                </div> -->
+
+                <!-- 正常內容 -->
+                <div class="metric-main">
+
+                  <div class="metric-label">
+                    {{ metrics.debt.label }}
+                  </div>
+
+                  <div class="metric-value">
+                    {{ metrics.debt.value }}
+                  </div>
+
+                </div>
+
+                <!-- Hover 詳細資訊 -->
+                <div class="metric-detail">
+
+                  <div class="detail-title">
+                    建議區間
+                  </div>
+
+                  <div class="detail-text">
+                    理想負債比應低於 40%
+                  </div>
+
+                  <div class="detail-title">
+                    計算公式
+                  </div>
+
+                  <div class="detail-text">
+                    (總負債/ 總資產) x 100%
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- 緊急預備金 -->
+              <div class="metric-card" [class.alert]="metrics.liquidity.isAlert">
+
+                <!-- <div class="info-btn" [matTooltip]="metrics.liquidity.tip" matTooltipPosition="above">
+                  ?
+                </div> -->
+
+                <div class="metric-main">
+
+                  <div class="metric-label">
+                    {{ metrics.liquidity.label }}
+                  </div>
+
+                  <div class="metric-value">
+                    {{ metrics.liquidity.value }}
+                  </div>
+
+                </div>
+
+                <div class="metric-detail">
+
+                  <div class="detail-title">
+                    建議區間
+                  </div>
+
+                  <div class="detail-text">
+                    建議保留3~6個月生活費
+                  </div>
+
+                  <div class="detail-title">
+                    計算公式
+                  </div>
+
+                  <div class="detail-text">
+                    流動現金÷每月固定支出
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- 儲蓄率 -->
+              <div class="metric-card" [class.alert]="metrics.savings.isAlert">
+
+                <!-- <div class="info-btn" [matTooltip]="metrics.savings.tip" matTooltipPosition="above">
+                  ?
+                </div> -->
+
+                <div class="metric-main">
+
+                  <div class="metric-label">
+                    {{ metrics.savings.label }}
+                  </div>
+
+                  <div class="metric-value">
+                    {{ metrics.savings.value }}
+                  </div>
+
+                </div>
+
+                <div class="metric-detail">
+
+                  <div class="detail-title">
+                    建議區間
+                  </div>
+
+                  <div class="detail-text">
+                    儲蓄率建議高於20%
+                  </div>
+
+                  <div class="detail-title">
+                    目前狀況
+                  </div>
+
+                  <div class="detail-text">
+                    (每月儲蓄金額 ÷ 每月淨收入) ×100%
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
         }
 
       </div>
+    </div>
+
+
+    <!-- 趨勢圖：獨立放在 top-section 外面 -->
+    <div class="trend-card">
+
+      <!-- 上方時間切換 -->
+      <div class="trend-filter">
+
+        <button *ngFor="let item of periods" [class.active]="selectedPeriod === item" (click)="changePeriod(item)">
+          {{ item }}
+        </button>
+
+      </div>
+
+      <!-- 標題 -->
+      <div class="analysis-header">
+        資產成長率
+      </div>
+
+
+      <!-- 折線圖 -->
+      <div echarts [options]="trendOption" class="trend-chart">
+      </div>
 
     </div>
 
 
-    <!-- 🔷 中間：財務指標 -->
-    <div class="card">
 
-      <div class="card-header">
-        財務健康指標
-      </div>
-
-      @if(isLoading){
-      <div class="loading">
-        資料載入中...
-      </div>
-      }
-
-      @else {
-
-      <!--  只顯示三個 -->
-      <div class="metrics-row">
-        <!-- 負債比 -->
-        <div class="metric-card" [class.alert]="metrics.debt.isAlert">
-
-          <div class="info-btn" [matTooltip]="metrics.debt.tip" matTooltipPosition="above">
-            ?
-          </div>
-
-          <div class="metric-label">
-            {{ metrics.debt.label }}
-          </div>
-
-          <div class="metric-value">
-            {{ metrics.debt.value }}
-          </div>
-
-        </div>
-
-        <!-- 緊急預備金 -->
-        <div class="metric-card" [class.alert]="metrics.liquidity.isAlert">
-
-          <div class="info-btn" [matTooltip]="metrics.liquidity.tip" matTooltipPosition="above">
-            ?
-          </div>
-
-          <div class="metric-label">
-            {{ metrics.liquidity.label }}
-          </div>
-
-          <div class="metric-value">
-            {{ metrics.liquidity.value }}
-          </div>
-
-        </div>
-
-        <!-- 儲蓄率 -->
-        <div class="metric-card" [class.alert]="metrics.savings.isAlert">
-
-          <div class="info-btn" [matTooltip]="metrics.savings.tip" matTooltipPosition="above">
-            ?
-          </div>
-
-          <div class="metric-label">
-            {{ metrics.savings.label }}
-          </div>
-
-          <div class="metric-value">
-            {{ metrics.savings.value }}
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="trend-card">
-
-        <!-- 上方時間切換 -->
-        <div class="trend-filter">
-
-          <button *ngFor="let item of periods" [class.active]="selectedPeriod === item" (click)="changePeriod(item)">
-            {{ item }}
-          </button>
-
-        </div>
-
-        <!-- 標題 -->
-        <div class="trend-title">
-          資產成長率
-        </div>
-
-
-        <!-- 折線圖 -->
-        <div echarts [options]="trendOption" class="trend-chart">
-        </div>
-
-
-      </div>
-
-      }
-
-    </div>
 
   </div>
   }

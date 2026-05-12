@@ -71,6 +71,7 @@ export class HealthComponent implements OnInit {
   healthData: any = null;
   analysisList: string[] = [];
 
+  healthLevelClass: string = '';
   isLoading: boolean = false;
   hasAsset: boolean = false;
   hasLiability: boolean = false;
@@ -95,7 +96,7 @@ export class HealthComponent implements OnInit {
       if (this.userId) {
         this.fetchHealthData(this.userId);
 
-         this.loadGrowthChart();
+        this.loadGrowthChart();
       }
     });
 
@@ -118,64 +119,76 @@ export class HealthComponent implements OnInit {
       .getAssetGrowth(this.userId!)
       .subscribe({
 
-    next: (res) => {
+        next: (res) => {
 
-      const months =
-        res.map(item => item.month);
+          const months =
+            res.map(item => item.month);
 
-      const growthRates =
-        res.map(item => item.growthRate);
+          const growthRates =
+            res.map(item => item.growthRate);
 
-      this.trendOption = {
+          this.trendOption = {
 
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{b}<br/>成長率：{c}%'
-        },
-
-        xAxis: {
-          type: 'category',
-          data: months
-        },
-
-        yAxis: {
-          type: 'value',
-          axisLabel: {
-            formatter: '{value}%'
-          }
-        },
-
-        series: [
-          {
-            data: growthRates,
-
-            type: 'line',
-
-            smooth: true,
-
-            symbol: 'circle',
-
-            symbolSize: 10,
-
-            lineStyle: {
-              width: 5,
-              color: '#4091C9'
+            tooltip: {
+              trigger: 'axis',
+              formatter: '{b}<br/>成長率：{c}%'
             },
 
-            itemStyle: {
-              color: '#fff',
-              borderColor: '#4091C9',
-              borderWidth: 3
-            }
-          }
-        ]
-      };
+            xAxis: {
+              type: 'category',
+              data: months
+            },
 
-    }
+            yAxis: {
+              type: 'value',
 
-  });
+              min: -100,
+              max: 100,
 
-}
+              interval: 20,
+
+              axisLabel: {
+                formatter: '{value}%'
+              },
+
+              splitLine: {
+                lineStyle: {
+                  color: '#e5e7eb'
+                }
+              }
+            },
+
+            series: [
+              {
+                data: growthRates,
+
+                type: 'line',
+
+                smooth: true,
+
+                symbol: 'circle',
+
+                symbolSize: 10,
+
+                lineStyle: {
+                  width: 5,
+                  color: '#4091C9'
+                },
+
+                itemStyle: {
+                  color: '#fff',
+                  borderColor: '#4091C9',
+                  borderWidth: 3
+                }
+              }
+            ]
+          };
+
+        }
+
+      });
+
+  }
 
   initGauge(score: number) {
     this.gaugeOption = {
@@ -280,22 +293,26 @@ export class HealthComponent implements OnInit {
 
         this.analysisList = data.advice ?? [];
 
-        if (score >= 90) {
-          this.healthLevel = '優秀';
+        if (score >= 85) {
+          this.healthLevel = '非常健康';
+          this.healthLevelClass = 'excellent';
         }
-        else if (score >= 70) {
+        else if (score >= 60) {
           this.healthLevel = '穩定';
+          this.healthLevelClass = 'good';
         }
-        else if (score >= 50) {
-          this.healthLevel = '普通';
+        else if (score >= 40) {
+          this.healthLevel = '注意';
+          this.healthLevelClass = 'warning';
         }
         else {
           this.healthLevel = '警告';
+          this.healthLevelClass = 'danger';
         }
         this.healthTipText =
           '90~100：財務非常健康\n' +
-          '70~89：財務穩定\n' +
-          '50~69：需注意支出\n' +
+          '60~89：財務穩定\n' +
+          '50~59：需注意支出\n' +
           '0~49：財務風險偏高';
 
 
