@@ -258,7 +258,7 @@ export class AssetOverviewComponent implements OnInit {
       if (!this.newAssetName || !this.newAssetAmount || !this.newAssetSymbol) {
         alert('請填寫完整資訊');
         return;
-      } else if(this.userAssets.filter(s=>s.stockId === this.newAssetSymbol)){
+      } else if (this.userAssets.filter(s => s.stockId === this.newAssetSymbol)) {
         const isConfirmed = confirm(`${this.newAssetName} 已設置過，確定要再新增該項目嗎?`);
 
         if (!isConfirmed) {
@@ -352,10 +352,10 @@ export class AssetOverviewComponent implements OnInit {
     this.newAssetType = asset.type;
     this.newAssetSymbol = asset.stockId ?? '';
     this.unitCount = asset.sharesOwned ?? null;
-    this.unitPrice = asset.sharesOwned && asset.totalCost
-      ? asset.totalCost / asset.sharesOwned
+    this.unitPrice = asset.sharesOwned && asset.cost
+      ? asset.cost / asset.sharesOwned
       : asset.amount ?? null;
-    this.newAssetAmount = asset.totalCost ?? asset.amount ?? null;
+    this.newAssetAmount = asset.cost ?? asset.amount ?? null;
   }
 
   cancelEdit() {
