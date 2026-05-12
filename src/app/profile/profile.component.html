@@ -4,9 +4,12 @@
   <div class="title-container">
     <span class="name">Hi,{{userName}}</span>
     @if(userLevel){
-      <a routerLink="/risk-test" routerLinkActive="risk-test-link" [title]="'點擊重新進行風險評估'" class="type">
+      <!-- <a routerLink="/risk-result" routerLinkActive="risk-test-link" [title]="'點擊查看風險評估結果'" class="type">
         [{{ translateLevel(userLevel)}}]
-      </a>
+      </a> -->
+      <button (click)="goToRiskResult()" [title]="'點擊查看風險評估結果'" class="type">
+        {{ translateLevel(userLevel)}}
+      </button>
       <!-- <span class="type">[{{ translateLevel(userLevel)}}]</span> -->
     }
   </div>

@@ -432,6 +432,9 @@ refreshChart(data: any[]) {
   goNewsUrl(newsUrl: string) {
     window.open(newsUrl, '_blank');
   }
+  userManagement(){
+    this.router.navigate(['/admin/user-management']);
+  }
 
   // 這裡是新聞輪播
   newscurrentIndex = 0; // 起始索引

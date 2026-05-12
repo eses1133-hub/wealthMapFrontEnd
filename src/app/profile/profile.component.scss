@@ -1,12 +1,12 @@
-.titleFrame{
+.titleFrame {
   margin: 20px 20px 0px 20px;
   display: flex;
-  justify-content:center;
+  justify-content: center;
 }
 
-.title-container{
+.title-container {
   width: 80%;
-  align-items:baseline;
+  align-items: baseline;
 }
 
 .frameCss {
@@ -86,18 +86,60 @@ input {
   }
 }
 
+// .type {
+//   color: #000000;
+//   letter-spacing: 3px;
+//   font-size: 20px;
+//   font-weight: bold;
+//   color: #4091c9;
+
+//   //手機
+//   @media(max-width:600px) {
+//     margin-left: 15px;
+//     font-size: 16px;
+//   }
+// }
+
 .type {
+  width: 120px;
   color: #000000;
   letter-spacing: 3px;
   font-size: 20px;
   font-weight: bold;
   color: #4091c9;
+  background-color: transparent;
+  border: 2px soild transparent;
 
   //手機
   @media(max-width:600px) {
     margin-left: 15px;
     font-size: 16px;
   }
+}
+
+.type {
+  width: 85px;
+  height: 35px;
+  color: #000000;
+  letter-spacing: 3px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #4091c9;
+  background-color: transparent;
+  border-bottom: 2px solid #4090c94d;
+  border-radius: 0;
+
+  //手機
+  @media(max-width:600px) {
+    margin-left: 15px;
+    font-size: 16px;
+  }
+}
+
+.type:hover {
+  color: #1368aa;
+  background-color: transparent;
+  border-bottom: 2px solid #1368aa;
 }
 
 
@@ -133,9 +175,10 @@ button:hover {
   letter-spacing: 2px;
   font-style: italic;
   cursor: pointer;
-//手機
+
+  //手機
   @media(max-width:600px) {
-  padding: 20px 30px;
+    padding: 20px 30px;
 
   }
 }

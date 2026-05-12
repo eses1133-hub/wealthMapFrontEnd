@@ -1,6 +1,6 @@
 import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { HttpClientService } from '../@service/http-client.service';
@@ -34,11 +34,10 @@ export class ProfileComponent {
   userEmail!: string;
   userLevel!:string;
 
-  constructor(
+  constructor(private router: Router,
     private httpClientService: HttpClientService,
     private exampleService: ExampleService) {
   }
-
 
   oldPasswordErrorMsg = '';
   newPasswordErrorMsg = '';
@@ -108,6 +107,10 @@ export class ProfileComponent {
         // },3000)
       }
     })
+  }
+
+  goToRiskResult(){
+    this.router.navigate(['/risk-result']);
   }
 
   ChangePwd() {
