@@ -48,6 +48,9 @@ export class AssetOverviewComponent implements OnInit {
   newLiabilityName: string = '';
   newLiabilityCategory: string = 'MORTGAGE'; // 預設為房貸
   newLiabilityAmount: number | null = null;
+  newLiabilityPayment: number | null = null; //貸款月還款
+  newLiabilityNotifyEnabled: boolean = false;  //是否開啟繳款通知
+  newLiabilitydueDay: number | null = 1;  //貸款月還款日
 
   // --- 淨資產變數 (新加入) ---
   netWorth: number = 0;
@@ -208,6 +211,16 @@ export class AssetOverviewComponent implements OnInit {
         plugins: {
           legend: { position: 'bottom' },
           tooltip: {
+            yAlign: 'bottom',
+            backgroundColor: 'rgb(255, 255, 255)',
+            titleColor: '#333',
+            bodyColor: '#666',
+            cornerRadius: 20,
+            padding: 12,
+            borderColor: '#4091c9',
+            borderWidth: 1,
+            displayColors: false,
+            boxPadding: 5,
             callbacks: {
               label: (context) => {
                 const value = context.raw as number;
@@ -258,7 +271,7 @@ export class AssetOverviewComponent implements OnInit {
       if (!this.newAssetName || !this.newAssetAmount || !this.newAssetSymbol) {
         alert('請填寫完整資訊');
         return;
-      } else if (this.userAssets.filter(s => s.stockId === this.newAssetSymbol)) {
+      } else if(!this.editingAssetId && this.userAssets.filter(s=>s.stockId === this.newAssetSymbol)){
         const isConfirmed = confirm(`${this.newAssetName} 已設置過，確定要再新增該項目嗎?`);
 
         if (!isConfirmed) {
@@ -294,7 +307,7 @@ export class AssetOverviewComponent implements OnInit {
 
       this.assetService.updateAsset(this.editingAssetId, payload).subscribe({
         next: () => {
-          alert('修改成功！');
+
           this.cancelEdit();
           this.refreshData();
         },
@@ -308,14 +321,14 @@ export class AssetOverviewComponent implements OnInit {
 
       this.assetService.addAsset(this.currentUserId, payload).subscribe({
         next: () => {
-          alert('新增成功！');
+
           this.showAddAssetForm = false;
           this.resetAssetForm();
           this.refreshData();
         },
         error: (err: any) => {
           console.error('新增失敗', err);
-          alert('新增失敗');
+          alert('新增失敗，請通知開發者。');
         }
       });
 
@@ -333,7 +346,7 @@ export class AssetOverviewComponent implements OnInit {
     if (confirm(`確定刪除「${name}」嗎？`)) {
       this.assetService.deleteAsset(assetId).subscribe({
         next: () => {
-          alert('刪除成功');
+
           this.refreshData(); // 重新整理畫面
         },
         error: (err) => {
@@ -351,11 +364,9 @@ export class AssetOverviewComponent implements OnInit {
     this.newAssetName = asset.name;
     this.newAssetType = asset.type;
     this.newAssetSymbol = asset.stockId ?? '';
-    this.unitCount = asset.sharesOwned ?? null;
-    this.unitPrice = asset.sharesOwned && asset.cost
-      ? asset.cost / asset.sharesOwned
-      : asset.amount ?? null;
-    this.newAssetAmount = asset.cost ?? asset.amount ?? null;
+    this.unitCount = asset.sharesOwned;
+    this.unitPrice = asset.cost ?? null;
+    this.newAssetAmount = asset.amount ?? null;
   }
 
   cancelEdit() {
@@ -388,10 +399,18 @@ export class AssetOverviewComponent implements OnInit {
       alert('請填寫完整資訊');
       return;
     }
+
+    if ( this.newLiabilityNotifyEnabled && !this.newLiabilitydueDay) {
+      alert('請選擇繳款日期');
+      return;
+    }
     const payload: Liability = {
       name: this.newLiabilityName,
       category: this.newLiabilityCategory,
-      amount: this.newLiabilityAmount
+      amount: this.newLiabilityAmount,
+      monthlyPayment: this.newLiabilityPayment,
+      notifyEnabled: this.newLiabilityNotifyEnabled,
+      dueDay: this.newLiabilitydueDay
     };
 
     if (this.editingLiabilityId) {
@@ -401,7 +420,7 @@ export class AssetOverviewComponent implements OnInit {
           this.cancelLiabilityEdit();
           this.refreshData();
         },
-        error: () => alert('修改失敗')
+        error: () => alert('修改失敗，請通知開發者。')
       });
     } else {
       // 新增模式
@@ -410,9 +429,12 @@ export class AssetOverviewComponent implements OnInit {
           this.showAddLiabilityForm = false;
           this.newLiabilityName = '';
           this.newLiabilityAmount = null;
+          this.newLiabilityPayment = null;
+          this.newLiabilityNotifyEnabled= false;
+          this.newLiabilitydueDay = 1;
           this.refreshData();
         },
-        error: () => alert('新增失敗')
+        error: () => alert('新增失敗，請通知開發者。')
       });
     }
   }
@@ -424,6 +446,9 @@ export class AssetOverviewComponent implements OnInit {
     this.newLiabilityName = liability.name;
     this.newLiabilityCategory = liability.category;
     this.newLiabilityAmount = liability.amount;
+    this.newLiabilityPayment = liability.monthlyPayment!;
+    this.newLiabilityNotifyEnabled= liability.notifyEnabled;
+    this.newLiabilitydueDay = liability.dueDay==null ? 1 : liability.dueDay;
   }
 
   cancelLiabilityEdit(): void {
@@ -432,12 +457,15 @@ export class AssetOverviewComponent implements OnInit {
     this.newLiabilityName = '';
     this.newLiabilityCategory = 'MORTGAGE';
     this.newLiabilityAmount = null;
+    this.newLiabilityPayment = null;
+    this.newLiabilityNotifyEnabled= false;
+    this.newLiabilitydueDay = 1;
   }
 
-  notificationDay: string = '1';
+
   onNotifyChange() {
-    if (this.isNotificationEnabled) {
-      console.log(`設定在每月 ${this.notificationDay} 提醒`);
+    if (this.newLiabilityNotifyEnabled) {
+      console.log(`設定在每月 ${this.newLiabilitydueDay} 提醒`);
     } else {
       console.log('使用者關閉了通知');
     }
@@ -455,7 +483,7 @@ export class AssetOverviewComponent implements OnInit {
 
       this.liabilityService.deleteLiability(liabilityId).subscribe({
         next: () => this.refreshData(),
-        error: () => alert('刪除失敗')
+        error: () => alert('刪除失敗，請通知開發者。')
       });
     }
   }
@@ -465,7 +493,9 @@ export class AssetOverviewComponent implements OnInit {
     this.showAddCashflowForm = !this.showAddCashflowForm;
     if (this.showAddCashflowForm) {
       this.editingAssetId = null;
-      this.resetAssetForm();
+      this.newAssetName =  '';
+      this.newAssetType = '';
+      this.newAssetAmount = null;
     }
     this.showAddLiabilityForm = false;
     this.showAddAssetForm = false;
@@ -473,8 +503,8 @@ export class AssetOverviewComponent implements OnInit {
 
   addCashflow(): void {
 
-    if (!this.newAssetName || !this.newAssetAmount) {
-      alert('請填寫完整資訊');
+    if (!this.newAssetName || !this.newAssetType || !this.newAssetAmount) {
+      alert('請填寫完整資訊。');
       return;
     }
 
@@ -485,12 +515,6 @@ export class AssetOverviewComponent implements OnInit {
       type: this.newAssetType
     };
 
-    if (this.newAssetType === 'STOCK' || this.newAssetType === 'FUND') {
-      payload.stockId = this.newAssetSymbol;
-      payload.sharesOwned = this.unitCount || 0;
-      payload.cost = this.unitPrice;    //單位成本價
-
-    }
     payload.amount = this.newAssetAmount; //股票/基金:股數 * 單位成本價
 
 
@@ -498,12 +522,11 @@ export class AssetOverviewComponent implements OnInit {
 
       this.assetService.updateAsset(this.editingAssetId, payload).subscribe({
         next: () => {
-          alert('修改成功！');
-          this.cancelEdit();
+          this.cancelCashFlow();
           this.refreshData();
         },
         error: (err: any) => {
-          console.error('修改失敗', err);
+          console.error('修改失敗，請通知開發者。', err);
 
         }
       });
@@ -512,14 +535,15 @@ export class AssetOverviewComponent implements OnInit {
 
       this.assetService.addAsset(this.currentUserId, payload).subscribe({
         next: () => {
-          alert('新增成功！');
-          this.showAddAssetForm = false;
-          this.resetAssetForm();
-          this.refreshData();
+
+          this.showAddCashflowForm = false;
+          this.newAssetName =  '';
+          this.newAssetType = '';
+          this.newAssetAmount = null;
         },
         error: (err: any) => {
           console.error('新增失敗', err);
-          alert('新增失敗');
+          alert('新增失敗，請通知開發者。');
         }
       });
 
@@ -537,11 +561,12 @@ export class AssetOverviewComponent implements OnInit {
   }
 
   cancelCashFlow(): void {
-    this.editingLiabilityId = null;
-    this.showAddLiabilityForm = false;
-    this.newLiabilityName = '';
-    this.newLiabilityCategory = 'MORTGAGE';
-    this.newLiabilityAmount = null;
+    this.editingAssetId = null;
+    this.showAddCashflowForm = false;
+
+    this.newAssetName =  '';
+    this.newAssetType = '';
+    this.newAssetAmount = null;
   }
 
   deleteCashFlow(assetId: number | undefined, assetName: string | undefined): void {
@@ -555,7 +580,7 @@ export class AssetOverviewComponent implements OnInit {
     if (confirm(`確定刪除「${name}」嗎？`)) {
       this.assetService.deleteAsset(assetId).subscribe({
         next: () => {
-          alert('刪除成功');
+
           this.refreshData(); // 重新整理畫面
         },
         error: (err) => {
