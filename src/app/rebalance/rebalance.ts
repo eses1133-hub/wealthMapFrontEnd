@@ -5,6 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HttpClientService } from '../@service/http-client.service';
 import { ExampleService } from '../@service/example.service';
 import { DialogAddRebalanceComponent } from '../@dialog/dialog-add-rebalance/dialog-add-rebalance.component';
+import { MatIconModule } from '@angular/material/icon';
 
 interface PortfolioItem {
   id?: number;          // 資料庫主鍵
@@ -18,7 +19,7 @@ interface PortfolioItem {
 @Component({
   selector: 'app-rebalance',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule,MatIconModule],
   templateUrl: './rebalance.html',
   styleUrl: './rebalance.scss'
 })
@@ -85,7 +86,8 @@ export class Rebalance implements OnInit {
    */
   addAsset() {
     const dialogRef = this.dialog.open(DialogAddRebalanceComponent, {
-      width: '450px'
+      width: '450px',
+      data: { existingSymbols: this.portfolio.map(p => p.stockId) }
     });
 
     dialogRef.afterClosed().subscribe(result => {

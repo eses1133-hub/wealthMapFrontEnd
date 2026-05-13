@@ -5,16 +5,11 @@ import { Chart } from 'chart.js/auto';
 import { Router } from '@angular/router';
 import { ExampleService } from '../../../../@service/example.service';
 
-
 // 匯入你的兩個 Service 與 Model
 import { AssetService } from '../../services/asset.service';
 import { AssetDTO, AssetAllocationDto } from '../../models/asset.model';
 import { Liability } from '../../../../@interface/liability';
 import { LiabilityService } from '../../../../@service/liability.service';
-import { HealthEventService } from '../../../../services/health-event.service';
-
-
-
 
 @Component({
   selector: 'app-asset-overview',
@@ -349,20 +344,18 @@ export class AssetOverviewComponent implements OnInit {
     }
   }
 
-  editAsset(asset: any) {
-    console.log(asset);
-    this.editingAssetId = asset.id; // 記下 ID，進入編輯模式
+  editAsset(asset: any): void {
+    this.editingAssetId = asset.id;
     this.showAddAssetForm = true;
 
-    // 完美對應你的變數清單
     this.newAssetName = asset.name;
-    this.newAssetSymbol = asset.symbol;
     this.newAssetType = asset.type;
-    this.unitPrice = asset.cost;   // 假設 amount 存的是單價
-    this.unitCount = asset.shares;   // 股數
-    this.newAssetAmount = asset.currentValue; // 總金額
-
-    // 如果你有寫計算總金額的方法，記得在這裡呼叫
+    this.newAssetSymbol = asset.stockId ?? '';
+    this.unitCount = asset.sharesOwned ?? null;
+    this.unitPrice = asset.sharesOwned && asset.totalCost
+      ? asset.totalCost / asset.sharesOwned
+      : asset.amount ?? null;
+    this.newAssetAmount = asset.totalCost ?? asset.amount ?? null;
   }
 
   cancelEdit() {
@@ -393,11 +386,6 @@ export class AssetOverviewComponent implements OnInit {
   addLiability(): void {
     if (!this.newLiabilityName || !this.newLiabilityAmount) {
       alert('請填寫完整資訊');
-      return;
-    }
-
-    if (!this.currentUserId) {
-      alert('使用者尚未登入');
       return;
     }
     const payload: Liability = {

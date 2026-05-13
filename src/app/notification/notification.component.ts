@@ -29,7 +29,7 @@ export class NotificationComponent {
   notificationList!: NotificationList|null;
   notificationIdDetail!: any|null;
   userId!:number;
-  personalLogs!:PersonalNotification[];
+  personalLogs:PersonalNotification[]=[];
   personalLogDetail!:PersonalNotification|null;
   notificationType!:string;
   //分頁設定
@@ -83,6 +83,18 @@ export class NotificationComponent {
 
   // 3. 取得詳情資料 (page = 2)
   loadDetail(id: number, type: 'SYSTEM' | 'PERSONAL') {
+    //如果是訪客身分，絕對不准傳 userId 給後端
+  if(type === 'SYSTEM' && (this.role === 'visitor' || !localStorage.getItem('token'))) {
+    // 訪客只能看「純系統公告」，不帶 userId 參數
+    const pureEndpoint = `http://localhost:8080/api/notifications/${id}`;
+    this.httpClientService.getApi(pureEndpoint).subscribe((res: any) => {
+       // 只顯示內容，不呼叫 markAsRead
+       this.notificationIdDetail = res.data;
+       this.page = 2;
+    });
+    return; // 阻止後面的邏輯跑掉
+  }
+
     this.notificationIdDetail = null; // 清空舊資料避免閃爍
     this.personalLogDetail = null;
     this.personalLogs = [];
@@ -120,6 +132,13 @@ export class NotificationComponent {
   }
 
   markAsRead(id:number, type: 'SYSTEM' | 'PERSONAL'){
+
+    // 如果是訪客，或者 userId 不存在，直接 return 不做動作
+  if (this.role === 'visitor' || !this.userId || this.userId === 0) {
+    console.log('訪客模式：不記錄已讀狀態');
+    return;
+  }
+
     if(type==='SYSTEM'){
       this.httpClientService.postApi(`http://localhost:8080/api/notifications/read?userId=${this.userId}&notificationId=${id}`, {})
       .subscribe((res:any) => {
@@ -190,6 +209,9 @@ export class NotificationComponent {
   // 取值函數，用法就像一個變數，但背後其實執行了一個函數。
   // 取得當前頁面要顯示的資料 (以 personalLogs 為例)
   get pagedPersonalLogs() {
+    if (!this.personalLogs) {
+      return [];
+    }
     const startIndex = (this.currentPage - 1) * this.pageSize;
     return this.personalLogs.slice(startIndex, startIndex + this.pageSize);
   }
@@ -262,7 +284,7 @@ export class NotificationComponent {
             this.page = 1;
             if (isSystem) {
               this.loadSystemList();
-            } 
+            }
           }
         });
       }
