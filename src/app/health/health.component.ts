@@ -328,7 +328,7 @@ export class HealthComponent implements OnInit {
           debt: {
             label: '負債比',
             value: DTI.toFixed(1) + '%',
-            isAlert: DTI > 30,
+            isAlert: DTI > 70,
             status: '',
             tip: '負債比 = 總負債 / 收入 × 100%，建議低於30%'
           },
