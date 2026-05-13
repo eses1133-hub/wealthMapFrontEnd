@@ -80,7 +80,7 @@ hr {
   width: 50px;
 }
 // .item-id-tag { background-color: #4091c9; }
-.item-id-tag-disabled { background-color: #ccc; }
+.item-id-tag-disabled { color: #858585; }
 
 /* 文字與標籤樣式 */
 .item-tag, .item-tag-disabled {
@@ -290,14 +290,14 @@ input:checked + .slider:before { transform: translateX(22px); }
   .admin-title { font-size: 24px; margin-left: 10px; margin-top: 60px; }
   .quantity-info, .pagination-select, .sw-label { display: none; }
   .list-box { width: 95%; }
-  .item-name { width: 100px; font-size: 14px; }
-  .item-email,.header-item-email  { display: none; } /* 手機版隱藏 Email 以防重疊 */
+  .item-name,.item-name-disabled { width: 100px; font-size: 14px; }
+  .item-email,.header-item-email,.item-email-disabled  { display: none; } /* 手機版隱藏 Email 以防重疊 */
   .sw-container { right: 5px; }
   .item-id-tag, .item-id-tag-disabled{width: 15px; font-size: 12px;}
   .header-item-id-tag{width: 40px;margin-left: 20px;}
   .header-item-name { width: 180px;margin-left: 30px; }
   .header-item-tag{width: 180px;margin-left: 20px;}
-  .item-tag{margin-right: 25px;}
+  .item-tag,.item-tag-disabled{margin-right: 25px;}
   .header-sw-label{min-width: 100px;}
   .header-list-item{padding: 10px 2px;}
 }

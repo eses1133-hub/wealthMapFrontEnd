@@ -36,7 +36,7 @@
     <div class="list-item" [class.row-hidden]="!user.enabled">
 
       <!-- 根據狀態切換樣式 (對標新聞 hidden 的邏輯) -->
-      <span [class]="user.enabled ? 'item-id-tag' : 'item-tag-disabled'">{{user.id}}</span>
+      <span [class]="user.enabled ? 'item-id-tag' : 'item-id-tag-disabled'">{{user.id}}</span>
       <span [class]="user.enabled ? 'item-name' : 'item-name-disabled'">{{user.name}}</span>
       <span [class]="user.enabled ? 'item-tag' : 'item-tag-disabled'"
             [class.admin-tag]="user.enabled && user.role === 'ADMIN'">{{ user.role }}</span>
