@@ -7,7 +7,7 @@ import { Liability } from '../@interface/liability';
   providedIn: 'root'
 })
 export class LiabilityService {
-  private apiUrl = 'http://localhost:8080/api/liabilities';
+  private apiUrl = 'https://backend-production-b9bbb.up.railway.app/api/liabilities';
 
   constructor(private http: HttpClient) { }
 
