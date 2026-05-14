@@ -141,9 +141,8 @@ export class HealthComponent implements OnInit {
 
             yAxis: {
               type: 'value',
-
-              min: -100,
-              max: 100,
+              min: 'dataMin',
+              max: 'dataMax',
 
               interval: 20,
 
