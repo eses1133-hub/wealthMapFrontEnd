@@ -66,39 +66,42 @@ export class DialogAddRebalanceComponent implements OnInit {
       return;
     }
 
-    // 1. 從 allAssets 中過濾出所有符合該 symbol 的股票資產
-    const matchingAssets = this.assets.filter(
-      a => a.type === 'STOCK' && a.symbol === this.newAsset.stockId
-    );
+    if(this.assets.some(a => a.type === 'STOCK' && a.symbol === this.newAsset.stockId )){
 
-    const totalShares = matchingAssets.reduce((sum, current) => sum + current.shares, 0);
-    console.log(matchingAssets);
-    console.log('股數'+totalShares);
+      // 1. 從 allAssets 中過濾出所有符合該 symbol 的股票資產
+      const matchingAssets = this.assets.filter(
+            a => a.type === 'STOCK' && a.symbol === this.newAsset.stockId
+          );
+      const totalShares = matchingAssets.reduce((sum, current) => sum + current.shares, 0);
+      console.log(matchingAssets);
+      console.log('股數'+totalShares);
 
-    // 這裡先預設為 0，等拿到現價後在 subscribe 裡計算比較準確
-    this.newAsset.sharesOwned = totalShares || 0;
+      // 這裡先預設為 0，等拿到現價後在 subscribe 裡計算比較準確
+      this.newAsset.sharesOwned = totalShares || 0;
 
-    // 【新增這段】：在清單中找到被選中的股票物件
-    // const selectedAsset = this.filteredStocks.find(s => s.symbol === this.newAsset.stockId);
+      // 【新增這段】：在清單中找到被選中的股票物件
+      // const selectedAsset = this.filteredStocks.find(s => s.symbol === this.newAsset.stockId);
 
-    // if (selectedAsset) {
-    //   this.newAsset.sharesOwned = selectedAsset.sharesOwned || 0;
-    //   console.log('已自動填入股數:', this.newAsset.sharesOwned);
-    // }
-    this.isLoading = true;
-    this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/quote/${this.newAsset.stockId}`)
-    .subscribe((res: any) => {
-      if (res.code === 200) {
-        this.currentPrice = res.data.currentPrice;
-        //計算股數：總資產額 / 當前市價
-        if (this.currentPrice > 0) {
-          this.totalAmount = this.newAsset.sharesOwned * this.currentPrice;
+      // if (selectedAsset) {
+      //   this.newAsset.sharesOwned = selectedAsset.sharesOwned || 0;
+      //   console.log('已自動填入股數:', this.newAsset.sharesOwned);
+      // }
+      this.isLoading = true;
+      this.httpClientService.getApi(`http://localhost:8080/api/strategy-set/quote/${this.newAsset.stockId}`)
+      .subscribe((res: any) => {
+        if (res.code === 200) {
+          this.currentPrice = res.data.currentPrice;
+          //計算股數：總資產額 / 當前市價
+          if (this.currentPrice > 0) {
+            this.totalAmount = this.newAsset.sharesOwned * this.currentPrice;
+          }
+
         }
 
-      }
+        this.isLoading = false;
+      });
 
-      this.isLoading = false;
-    });
+    }
 
     // const quoteUrl = `http://localhost:8080/api/strategy-set/quote/${this.newAsset.stockId}`;
     // // 獲取即時報價
