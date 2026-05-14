@@ -13,18 +13,11 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideHttpClient(), // 注入攔截器
-    //provideEchartsCore({ echarts })
-
-     provideHttpClient(),
+    // provideEchartsCore({ echarts })
     importProvidersFrom(
       NgxEchartsModule.forRoot({
         echarts: () => echarts
       })
     )
   ]
-
-
 };
-
-
