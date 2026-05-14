@@ -312,6 +312,7 @@ export class AssetOverviewComponent implements OnInit {
 
           this.cancelEdit();
           this.refreshData();
+          this.exampleService.reloadUserContext(); //全域更新
         },
         error: (err: any) => {
           console.error('修改失敗', err);
@@ -327,6 +328,7 @@ export class AssetOverviewComponent implements OnInit {
           this.showAddAssetForm = false;
           this.resetAssetForm();
           this.refreshData();
+          this.exampleService.reloadUserContext(); //全域更新
         },
         error: (err: any) => {
           console.error('新增失敗', err);
@@ -350,6 +352,7 @@ export class AssetOverviewComponent implements OnInit {
         next: () => {
 
           this.refreshData(); // 重新整理畫面
+          this.exampleService.reloadUserContext(); //全域更新
         },
         error: (err) => {
           console.error('刪除失敗', err);
@@ -526,6 +529,7 @@ export class AssetOverviewComponent implements OnInit {
         next: () => {
           this.cancelCashFlow();
           this.refreshData();
+          this.exampleService.reloadUserContext(); //全域更新
         },
         error: (err: any) => {
           console.error('修改失敗，請通知開發者。', err);
@@ -543,6 +547,7 @@ export class AssetOverviewComponent implements OnInit {
           this.newAssetType = '';
           this.newAssetAmount = null;
           this.refreshData();
+          this.exampleService.reloadUserContext(); //全域更新
         },
         error: (err: any) => {
           console.error('新增失敗', err);
