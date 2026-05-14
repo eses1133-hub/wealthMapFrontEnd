@@ -1,145 +1,174 @@
-import { RiskGuard } from './guards/risk.guard';
 import { Routes } from '@angular/router';
-import { MainComponent } from './main/main.component';
-import { AdminMainComponent } from './admin-main/admin-main.component';
-import { AdminInformationSetComponent } from './admin-information-set/admin-information-set.component';
-import { AdminNotificationSetComponent } from './admin-notification-set/admin-notification-set.component';
-import { AdminServiceSetComponent } from './admin-service-set/admin-service-set.component';
-import { AdminPrivacySetComponent } from './admin-privacy-set/admin-privacy-set.component';
-import { RiskCoverComponent } from './features/risk-assessment/pages/risk-cover/risk-cover.component';
-import { RiskTestComponent } from './features/risk-assessment/pages/risk-test/risk-test.component';
-import { RiskResultComponent } from './features/risk-assessment/pages/risk-result/risk-result.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { HeaderComponent } from './header/header.component';
-import { InvestmentManageComponent } from './investment-manage/investment-manage.component';
-import { StrategyListComponent } from './strategy-list/strategy-list.component';
-import { NotificationComponent } from './notification/notification.component';
-import { PersonalNotificationComponent } from './personal-notification/personal-notification.component';
-import { AdminNewsComponent } from './admin-news/admin-news.component';
-import { ProfileComponent } from './profile/profile.component';
+
 import { authGuard } from './auth/auth.guard';
-import { AssetOverviewComponent } from './features/assets/pages/asset-overview/asset-overview.component';
-import { HealthComponent } from './health/health.component';
-import { MonteComponent } from './monte/monte.component';
-import { GoalOverviewComponent } from './features/financial-goals/pages/goal-overview/goal-overview.component';
-import { SseDemoComponent } from './sse-demo/sse-demo.component';
-import { PortfolioRecommendationComponent } from './features/risk-assessment/pages/portfolio-recommendation/portfolio-recommendation.component';
-import { CashFlowOverviewComponent } from './features/cash-flow/pages/cash-flow-overview/cash-flow-overview.component';
-import { AdminUserManagementComponent } from './admin-user-management/admin-user-management.component';
+import { RiskGuard } from './guards/risk.guard';
 
 export const routes: Routes = [
-
-  //全開放頁面
-  { path: "main", component: MainComponent },
-  { path: "risk-test", component: RiskTestComponent },
-  { path: "risk-result", component: RiskResultComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: "information", component: AdminInformationSetComponent },
-  { path: "service", component: AdminServiceSetComponent },
-  { path: "privacy", component: AdminPrivacySetComponent },
-  //通知頁面
-  { path: 'system-notification', component: NotificationComponent },
-  { path: 'system-notification/:pageId', component: NotificationComponent },
-  // 風險評估系列
-  { path: 'risk-cover', component: RiskCoverComponent },
-  { path: 'risk-test', component: RiskTestComponent },
-  { path: 'risk-result', component: RiskResultComponent },
-  //有訪客頁面的
-  { path: 'investment-manage', component: InvestmentManageComponent },
-  { path: 'goals', component: GoalOverviewComponent },
-  { path: 'health', component: HealthComponent  },
-
-
-
-
-
-  //僅對ADMIN開放
+  {
+    path: 'main',
+    loadComponent: () => import('./main/main.component').then((m) => m.MainComponent)
+  },
+  {
+    path: 'risk-test',
+    loadComponent: () =>
+      import('./features/risk-assessment/pages/risk-test/risk-test.component').then((m) => m.RiskTestComponent)
+  },
+  {
+    path: 'risk-result',
+    loadComponent: () =>
+      import('./features/risk-assessment/pages/risk-result/risk-result.component').then((m) => m.RiskResultComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then((m) => m.LoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.component').then((m) => m.RegisterComponent)
+  },
+  {
+    path: 'information',
+    loadComponent: () =>
+      import('./admin-information-set/admin-information-set.component').then((m) => m.AdminInformationSetComponent)
+  },
+  {
+    path: 'service',
+    loadComponent: () => import('./admin-service-set/admin-service-set.component').then((m) => m.AdminServiceSetComponent)
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./admin-privacy-set/admin-privacy-set.component').then((m) => m.AdminPrivacySetComponent)
+  },
+  {
+    path: 'system-notification',
+    loadComponent: () => import('./notification/notification.component').then((m) => m.NotificationComponent)
+  },
+  {
+    path: 'system-notification/:pageId',
+    loadComponent: () => import('./notification/notification.component').then((m) => m.NotificationComponent)
+  },
+  {
+    path: 'risk-cover',
+    loadComponent: () =>
+      import('./features/risk-assessment/pages/risk-cover/risk-cover.component').then((m) => m.RiskCoverComponent)
+  },
+  {
+    path: 'investment-manage',
+    loadComponent: () => import('./investment-manage/investment-manage.component').then((m) => m.InvestmentManageComponent)
+  },
+  {
+    path: 'goals',
+    loadComponent: () =>
+      import('./features/financial-goals/pages/goal-overview/goal-overview.component').then(
+        (m) => m.GoalOverviewComponent
+      )
+  },
+  {
+    path: 'health',
+    loadComponent: () => import('./health/health.component').then((m) => m.HealthComponent)
+  },
   {
     path: 'admin',
-    canActivate: [authGuard],    // 💡 只要進到 /admin 開頭的，都要檢查
-    data: { roles: ['ADMIN'] },  // 💡 統一要求管理員權限
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN'] },
     children: [
-      { path: "notification-set", component: AdminNotificationSetComponent },
-      { path: "notification-set/:pageId", component: AdminNotificationSetComponent },
-      { path: 'news', component: AdminNewsComponent },
-      { path: 'user-management', component: AdminUserManagementComponent },
+      {
+        path: 'notification-set',
+        loadComponent: () =>
+          import('./admin-notification-set/admin-notification-set.component').then(
+            (m) => m.AdminNotificationSetComponent
+          )
+      },
+      {
+        path: 'notification-set/:pageId',
+        loadComponent: () =>
+          import('./admin-notification-set/admin-notification-set.component').then(
+            (m) => m.AdminNotificationSetComponent
+          )
+      },
+      {
+        path: 'news',
+        loadComponent: () => import('./admin-news/admin-news.component').then((m) => m.AdminNewsComponent)
+      },
+      {
+        path: 'user-management',
+        loadComponent: () =>
+          import('./admin-user-management/admin-user-management.component').then((m) => m.AdminUserManagementComponent)
+      }
     ]
   },
-
-  //對ADMIN、USER開放
   {
     path: 'personal-notification',
-    component: NotificationComponent,
+    loadComponent: () => import('./notification/notification.component').then((m) => m.NotificationComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'personal-notification/:pageId',
-    component: NotificationComponent,
+    loadComponent: () => import('./notification/notification.component').then((m) => m.NotificationComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'profile',
-    component: ProfileComponent,
+    loadComponent: () => import('./profile/profile.component').then((m) => m.ProfileComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
-  // 投資管理
   {
     path: 'investment-manage',
-    component: InvestmentManageComponent,
+    loadComponent: () => import('./investment-manage/investment-manage.component').then((m) => m.InvestmentManageComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'strategy-list',
-    component: StrategyListComponent,
+    loadComponent: () => import('./strategy-list/strategy-list.component').then((m) => m.StrategyListComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'monte',
-    component: MonteComponent,
+    loadComponent: () => import('./monte/monte.component').then((m) => m.MonteComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'health',
-    component: HealthComponent ,
+    loadComponent: () => import('./health/health.component').then((m) => m.HealthComponent),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'assets',
-    component: AssetOverviewComponent,
+    loadComponent: () =>
+      import('./features/assets/pages/asset-overview/asset-overview.component').then((m) => m.AssetOverviewComponent),
     canActivate: [authGuard],
-    data: { roles: ['ADMIN', 'USER'] } // 限制只有登入的人能看
+    data: { roles: ['ADMIN', 'USER'] }
   },
-
   {
     path: 'risk-cover',
-    component: RiskCoverComponent,
+    loadComponent: () =>
+      import('./features/risk-assessment/pages/risk-cover/risk-cover.component').then((m) => m.RiskCoverComponent),
     canActivate: [RiskGuard]
   },
   {
     path: 'portfolio-recommendation',
-    component: PortfolioRecommendationComponent,
+    loadComponent: () =>
+      import('./features/risk-assessment/pages/portfolio-recommendation/portfolio-recommendation.component').then(
+        (m) => m.PortfolioRecommendationComponent
+      ),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
   {
     path: 'cash-flow',
-    component: CashFlowOverviewComponent,
+    loadComponent: () =>
+      import('./features/cash-flow/pages/cash-flow-overview/cash-flow-overview.component').then(
+        (m) => m.CashFlowOverviewComponent
+      ),
     canActivate: [authGuard],
     data: { roles: ['ADMIN', 'USER'] }
   },
-
-
-  // { path: 'forgot', component: ForgotComponent },
-
-  // 萬用路由（必須放在陣列的最下方）
   { path: '**', redirectTo: 'main', pathMatch: 'full' }
 ];
